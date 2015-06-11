@@ -23,7 +23,7 @@ namespace stl
 {
 
 template<class T>
-void readSTL(vector< <Mesh<T> > pObjects, string pFileName)
+void readSTL(vector< Mesh<T> > &pObjects, string pFileName)
 {
     cout << "Hello World!" << endl;
 }

@@ -7,11 +7,12 @@
  * file.
  */
 
-#include "../src/stl_reader.hpp"
+#include "../src/stl.hpp"
 #include <vector>
 
 using namespace std;
 using namespace meshio;
+using namespace stl;
 
 int main()
 {

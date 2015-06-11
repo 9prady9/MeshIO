@@ -33,18 +33,18 @@ struct Vec3 {
 };
 
 template<typename T>
-struct Vec2f {
+struct Vec2 {
     T x;
     T y;
 };
 
 template<class T>
 struct Mesh {
-    vector< Vec4<T> > 		mPositions;
-    vector< Vec3<float> > 	mNormals;
-    vector< Vec2<float> > 	mTexcoords;
-    vector< Vec4<float> > 	mColors;
-    vector< unsigned int> 	mIndices;
+    vector< Vec4<T> >		mPositions;
+    vector< Vec3<float> >	mNormals;
+    vector< Vec2<float> >	mTexcoords;
+    vector< Vec4<float> >	mColors;
+    vector< unsigned int>	mIndices;
 };
 
 }
