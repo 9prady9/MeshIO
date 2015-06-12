@@ -7,12 +7,10 @@
  * file.
  */
 
-#ifndef __OUTPUT_FORMAT_HPP__
-#define __OUTPUT_FORMAT_HPP__
+#ifndef __MESHIO_DEFINES_HPP__
+#define __MESHIO_DEFINES_HPP__
 
 #include <vector>
-
-using namespace std;
 
 namespace meshio
 {
@@ -40,13 +38,13 @@ struct Vec2 {
 
 template<class T>
 struct Mesh {
-    vector< Vec4<T> >		mPositions;
-    vector< Vec3<float> >	mNormals;
-    vector< Vec2<float> >	mTexcoords;
-    vector< Vec4<float> >	mColors;
-    vector< unsigned int>	mIndices;
+    std::vector< Vec4<T> >       mPositions;
+    std::vector< Vec3<float> >   mNormals;
+    std::vector< Vec2<float> >   mTexcoords;
+    std::vector< Vec4<float> >   mColors;
+    std::vector< unsigned int>   mIndices;
 };
 
 }
 
-#endif // __OUTPUT_FORMAT_HPP__
+#endif // __MESHIO_DEFINES_HPP__

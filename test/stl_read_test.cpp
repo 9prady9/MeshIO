@@ -17,6 +17,6 @@ using namespace stl;
 int main()
 {
     vector< Mesh<float> > objs;
-    readSTL<float>(objs, "stl file full path");
+    readSTL<float>(objs, "../resources/sample_ascii.stl");
     return 0;
 }
