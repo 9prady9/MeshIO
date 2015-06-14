@@ -36,13 +36,29 @@ struct Vec2 {
     T y;
 };
 
-template<class T>
+template<typename T>
 struct Mesh {
     std::vector< Vec4<T> >       mPositions;
     std::vector< Vec3<float> >   mNormals;
     std::vector< Vec2<float> >   mTexcoords;
     std::vector< Vec4<float> >   mColors;
     std::vector< unsigned int>   mIndices;
+
+    void Resize(unsigned int pSize) {
+        mPositions.resize(3*pSize);
+        mNormals.resize(pSize);
+        mTexcoords.resize(pSize);
+        mColors.resize(pSize);
+        mIndices.resize(3*pSize);
+    }
+
+    void Clear() {
+        mPositions.clear();
+        mNormals.clear();
+        mTexcoords.clear();
+        mColors.clear();
+        mIndices.clear();
+    }
 };
 
 }
