@@ -72,14 +72,13 @@ bool readAsciiSTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
 template<typename T=float>
 bool readBinarySTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
 {
-    typedef float T2;
     std::cout << "Reading Binary STL file" << std::endl;
 
     uint32_t numTriangles;
     uint16_t attribByteCount;
-    T2 value;
-    std::vector<T2> values;
-    std::size_t sizeT2 = sizeof(T2);
+    float value;
+    std::vector<float> values;
+    std::size_t sizeT2 = sizeof(float);
     std::size_t sizeUInt16 = sizeof(uint16_t);
     unsigned objectCount = 0;
 
@@ -102,7 +101,7 @@ bool readBinarySTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
         STLData<T> stlObject;
         stlObject.resize(numTriangles);
         Vec4<T> position;
-        Vec3<T2> normal;
+        Vec3<float> normal;
 
         // Default assignment
         position.w = (T)1.;
