@@ -39,11 +39,10 @@ struct Vec2 {
 template<class T>
 class Mesh {
   public:
-    typedef float T2;
     std::vector< Vec4<T> >  mPositions;
-    std::vector< Vec3<T2> > mNormals;
-    std::vector< Vec2<T2> > mTexcoords;
-    std::vector< Vec4<T2> > mColors;
+    std::vector< Vec3<float> > mNormals;
+    std::vector< Vec2<float> > mTexcoords;
+    std::vector< Vec4<float> > mColors;
     std::vector< unsigned > mIndices;
 
     void resize(unsigned pSize) {
