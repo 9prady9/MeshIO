@@ -2,7 +2,7 @@
  * Copyright (c) 2015, Lakshman Anumolu, Pradeep Garigipati
  * All rights reserved.
  *
- * This file is part of stl reader whose distribution is governed by
+ * This file is part of MeshIO whose distribution is governed by
  * the BSD 2-Clause License contained in the accompanying LICENSE.txt
  * file.
  */
@@ -36,28 +36,52 @@ struct Vec2 {
     T y;
 };
 
-template<typename T>
-struct Mesh {
-    std::vector< Vec4<T> >       mPositions;
-    std::vector< Vec3<float> >   mNormals;
-    std::vector< Vec2<float> >   mTexcoords;
-    std::vector< Vec4<float> >   mColors;
-    std::vector< unsigned int>   mIndices;
+template<class T>
+class Mesh {
+  public:
+    typedef float T2;
+    std::vector< Vec4<T> >  mPositions;
+    std::vector< Vec3<T2> > mNormals;
+    std::vector< Vec2<T2> > mTexcoords;
+    std::vector< Vec4<T2> > mColors;
+    std::vector< unsigned > mIndices;
 
-    void Resize(unsigned int pSize) {
-        mPositions.resize(3*pSize);
+    void resize(unsigned pSize) {
+        mPositions.resize(pSize);
         mNormals.resize(pSize);
         mTexcoords.resize(pSize);
         mColors.resize(pSize);
-        mIndices.resize(3*pSize);
     }
 
-    void Clear() {
+    void resizeIndices(unsigned pSize) {
+        mIndices.resize(pSize);
+    }
+
+    void clear() {
         mPositions.clear();
         mNormals.clear();
         mTexcoords.clear();
         mColors.clear();
         mIndices.clear();
+    }
+};
+
+/*
+ * struct to store data from STL file
+ */
+template<typename T>
+struct STLData {
+    std::vector< Vec4<T> >      mPositions;
+    std::vector< Vec3<float> >  mNormals;
+
+    void resize(unsigned pNumTriangles) {
+        mPositions.resize(3*pNumTriangles);
+        mNormals.resize(pNumTriangles);
+    }
+
+    void clear() {
+        mPositions.clear();
+        mNormals.clear();
     }
 };
 

@@ -2,7 +2,7 @@
  * Copyright (c) 2015, Lakshman Anumolu, Pradeep Garigipati
  * All rights reserved.
  *
- * This file is part of stl reader whose distribution is governed by
+ * This file is part of MeshIO whose distribution is governed by
  * the BSD 2-Clause License contained in the accompanying LICENSE.txt
  * file.
  */
@@ -15,9 +15,9 @@ using namespace meshio;
 using namespace stl;
 
 template<typename T>
-void writeMesh(vector< Mesh<T> > &objs) {
-    ofstream fNormals("normals.txt"); //TODO check file variable convention
-    ofstream fPositions("positions.txt"); //TODO same as above
+void writeMesh(vector< STLData<T> > &objs) {
+    ofstream fNormals("normals.txt");
+    ofstream fPositions("positions.txt");
 
     if(fNormals.is_open() && fPositions.is_open()) {
         for(unsigned i = 0; i < objs.size(); ++i) {
@@ -43,14 +43,14 @@ void writeMesh(vector< Mesh<T> > &objs) {
 int main()
 {
     typedef float T;
-    vector< Mesh<T> > objs;
-    readSTL(objs, "../resources/sample_binary.stl");
+    vector< STLData<T> > objs;
+    readSTL<T>(objs, "../resources/sample_binary.stl");
 
     writeMesh<T>(objs);
 
     // Clear
     for(unsigned i = 0; i < objs.size(); ++i)
-        objs[i].Clear();
+        objs[i].clear();
 
     return 0;
 }
