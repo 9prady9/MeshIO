@@ -7,50 +7,42 @@
  * file.
  */
 
-#include "../src/stl.hpp"
+#include <gtest/gtest.h>
+#include <stl.hpp>
 #include <vector>
 
 using namespace std;
 using namespace meshio;
 using namespace stl;
 
-template<typename T>
-void writeMesh(vector< STLData<T> > &objs) {
-    ofstream fNormals("normals.txt");
-    ofstream fPositions("positions.txt");
-
-    if(fNormals.is_open() && fPositions.is_open()) {
-        for(unsigned i = 0; i < objs.size(); ++i) {
-            fNormals << "object " << i+1;
-            fPositions << "object " << i+1;
-            for(unsigned j = 0; j < objs[i].mNormals.size(); ++j) {
-                fNormals << "\n" << objs[i].mNormals[j].x << " "
-                    << objs[i].mNormals[j].y << " "
-                    << objs[i].mNormals[j].z;
-            }
-            for(unsigned j = 0; j < objs[i].mPositions.size(); ++j) {
-                fPositions << "\n" << objs[i].mPositions[j].x << " "
-                    << objs[i].mPositions[j].y << " "
-                    << objs[i].mPositions[j].z << " "
-                    << objs[i].mPositions[j].w;
-            }
-        }
-        fNormals.close();
-        fPositions.close();
-    }
-}
-
-int main()
+TEST(MeshIO, Read_BinarySTL)
 {
-    typedef float T;
-    vector< STLData<T> > objs;
-    readSTL<T>(objs, "../resources/sample_binary.stl");
+    // FIXME
+    /*
+    The tests still need to be fixed. This message for Laxman to get to know how to
+    write unit tests using google test.
+    */
 
-    writeMesh<T>(objs);
+    /* Read stl file using library function */
+    vector< STLData<float> > objs;
+    readSTL<float>(objs, TEST_DIR "/binary.stl");
 
-    // Clear
-    for(unsigned i = 0; i < objs.size(); ++i)
-        objs[i].clear();
+    /* read gold data using regular file reading */
 
-    return 0;
+    /* Now write another helper function that helps you compare two
+       objects that has same type of data.
+
+       For example, iIn our case we can handle simple objects like square with
+       hard coded data and much bigger objects can be compared
+       by cross checking data read from different formats or something
+       like that.
+    */
+
+    /* use the boolean returned by the comparison helper functon
+    to find check for expected result which is TRUE because the
+    results should match for our test to pass. This can be done
+    using Google Test macros such as EXPECT_EQ (Check Below)
+    */
+
+    EXPECT_TRUE(true == true/* Ideally you should your comparison function called here*/);
 }

@@ -2,7 +2,12 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 PROJECT(MeshIO)
 
-ADD_EXECUTABLE(stl_read_test "test/stl_read_test.cpp")
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
+
+OPTION(BUILD_EXAMPLES "Build examples" OFF)
+OPTION(BUILD_TESTS "Build Tests" ON)
+OPTION(USE_SYSTEM_GTEST "Use GTEST from system libraries" OFF)
+OPTION(USE_RELATIVE_TEST_DIR "Use relative paths for the test data directory(For continious integration(CI) purposes only)" OFF)
 
 IF(UNIX)
     IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -12,4 +17,12 @@ IF(UNIX)
     ELSE()
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
     ENDIF()
+ENDIF()
+
+IF(BUILD_EXAMPLES)
+	ADD_SUBDIRECTORY(examples)
+ENDIF()
+
+IF(BUILD_TESTS)
+	ADD_SUBDIRECTORY(test)
 ENDIF()
