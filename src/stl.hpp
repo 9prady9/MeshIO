@@ -49,7 +49,7 @@ bool readSTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
         return false;
     }
 
-    int bufferMaxSize = 80; // Only to read header
+    const int bufferMaxSize = 80; // Only to read header
     char buffer[bufferMaxSize];
 
     ifs.getline(&buffer[0], bufferMaxSize);
@@ -65,15 +65,12 @@ bool readSTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
 template<typename T=float>
 bool readAsciiSTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
 {
-    std::cout << "Reading Ascii STL file" << std::endl;
     return true;
 }
 
 template<typename T=float>
 bool readBinarySTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
 {
-    std::cout << "Reading Binary STL file" << std::endl;
-
     uint32_t numTriangles;
     uint16_t attribByteCount;
     float value;
@@ -96,8 +93,8 @@ bool readBinarySTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
     ifs.read((char *)&numTriangles, sizeof(uint32_t));
 
     while(numTriangles) {
-        std::cout<<"\tReading " << numTriangles << " facets from object "
-            << ++objectCount << std::endl;
+        //std::cout<<"\tReading " << numTriangles << " facets from object "
+        //    << ++objectCount << std::endl;
         STLData<T> stlObject;
         stlObject.resize(numTriangles);
         Vec4<T> position;
