@@ -8,7 +8,7 @@
  */
 
 #include <gtest/gtest.h>
-#include <stl.hpp>
+#include <meshio/stl.hpp>
 #include <vector>
 
 using namespace std;
