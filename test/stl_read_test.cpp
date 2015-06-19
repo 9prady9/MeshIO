@@ -27,6 +27,13 @@ TEST(MeshIO, Read_BinarySTL)
     vector< STLData<float> > objs;
     readSTL<float>(objs, TEST_DIR "/binary.stl");
 
+    /* Write STL file */
+    writeSTL<float>(objs, TEST_DIR "/binary2ascii.stl", "ascii");
+
+    /* Compute vertex normals from from normals in STL data */
+    vector<vector<Vec3<float> > > vertexNormalsForSTLData;
+    computeVertexNormals<float>(objs, vertexNormalsForSTLData);
+
     /* read gold data using regular file reading */
 
     /* Now write another helper function that helps you compare two
