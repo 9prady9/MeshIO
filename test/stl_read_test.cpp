@@ -28,11 +28,11 @@ TEST(MeshIO, Read_BinarySTL)
     readSTL<float>(objs, TEST_DIR "/binary.stl");
 
     /* Write STL file */
-    writeSTL<float>(objs, TEST_DIR "/binary2ascii.stl", "ascii");
+    writeSTL<float>(objs, TEST_DIR "/binary2binary.stl", "binary");
 
-    /* Compute vertex normals from from normals in STL data */
-    vector<vector<Vec3<float> > > vertexNormalsForSTLData;
-    computeVertexNormals<float>(objs, vertexNormalsForSTLData);
+    for(unsigned i = 0; i < objs.size(); ++i)
+        objs[i].clear();
+    objs.clear();
 
     /* read gold data using regular file reading */
 
