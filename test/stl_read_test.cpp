@@ -14,7 +14,7 @@
 using namespace std;
 using namespace meshio;
 
-TEST(MeshIO, Read_BinarySTL)
+TEST(STL, ReadWrite_BinaryFile)
 {
     // FIXME
     /*
@@ -51,4 +51,17 @@ TEST(MeshIO, Read_BinarySTL)
     */
 
     EXPECT_TRUE(true == true/* Ideally you should your comparison function called here*/);
+}
+
+TEST(STL, READ_ASCII)
+{
+    vector< STLData<float> > objs;
+    stl::read<float>(objs, TEST_DIR "/ascii.stl");
+}
+
+TEST(STL, WRITE_ASCII)
+{
+    vector< STLData<float> > objs;
+    stl::read<float>(objs, TEST_DIR "/ascii.stl");
+    stl::write(objs, TEST_DIR "/ascii2ascii.stl");
 }
