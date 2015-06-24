@@ -44,8 +44,6 @@ bool readBinarySTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
     ifs.read((char *)&numTriangles, sizeof(uint32_t));
 
     while (numTriangles) {
-        //std::cout<<"\tReading " << numTriangles << " facets from object "
-        //    << ++objectCount << std::endl;
         STLData<T> stlObject;
         stlObject.resize(numTriangles);
         Vec4<T> position;
@@ -149,7 +147,7 @@ bool writeBinarySTL(const std::vector< STLData<T> > &pObjects,
 }
 
 
-template<typename T = float>
+template<typename T>
 bool read(std::vector< STLData<T> > &pObjects, const char* pFileName)
 {
     for (unsigned int i = 0; i < pObjects.size(); ++i)
@@ -181,7 +179,7 @@ bool read(std::vector< STLData<T> > &pObjects, const char* pFileName)
 * Writes STL files in a specified format
 * "ascii" or "binary"
 */
-template<typename T = float>
+template<typename T>
 bool write(const std::vector< STLData<T> > &pObjects, const char* pFileName,
            const STLFormat pFormat)
 {
