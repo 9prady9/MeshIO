@@ -1,24 +1,101 @@
 /*
-* Copyright (c) 2015, Lakshman Anumolu, Pradeep Garigipati
-* All rights reserved.
-*
-* This file is part of MeshIO whose distribution is governed by
-* the BSD 2-Clause License contained in the accompanying LICENSE.txt
-* file.
-*/
+ * Copyright (c) 2015, Lakshman Anumolu, Pradeep Garigipati
+ * All rights reserved.
+ *
+ * This file is part of MeshIO whose distribution is governed by
+ * the BSD 2-Clause License contained in the accompanying LICENSE.txt
+ * file.
+ */
+
+Vec3<float> readNormal(const std::string& pLine)
+{
+    Vec3<float> N;
+    std::stringstream lineSS(pLine);
+    std::string facet, normal;
+    lineSS >> facet >> normal >> N.x >> N.y >> N.z;
+    return N;
+}
+
+Vec4<float> readVertex(const std::string& pLine)
+{
+    Vec4<float> V;
+    std::stringstream lineSS(pLine);
+    std::string vertex;
+    lineSS >> vertex >> V.x >> V.y >> V.z;
+    V.w = 1.0;
+    return V;
+}
 
 template<typename T = float>
 bool readAsciiSTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
 {
+    std::ifstream objFile(pFileName);
+    std::string line;
+
+    if (!objFile.is_open())
+        return false;
+
+    while (std::getline(objFile, line)) {
+        std:stringstream lineSS(line);
+        std::string keyWord;
+
+        lineSS >> keyWord;
+
+        if (keyWord == "solid") {
+            STLData<T> currObj;
+            bool isFacetRead = false;
+            unsigned outerCount = 0;
+
+            while (std::getline(objFile, line)) {
+                std::stringstream ss(line);
+                std::string key;
+
+                ss >> key;
+                if (key == "endsolid")
+                    break;
+
+                if (key == "facet") {
+                    currObj.mNormals.push_back(readNormal(line));
+                    isFacetRead = true;
+                } else if (key == "outer") {
+                    /* Check if already facet is being read
+                       if true, that means another primitive is having the
+                       same normal as it's predecessor. Therefore, duplicate
+                       the normal
+                     */
+                    if (isFacetRead && outerCount > 1)
+                        currObj.mNormals.push_back(currObj.mNormals.back());
+                    /* No need to do anything else specific just
+                    just proceed to next line to read vertices */
+                    outerCount++;
+                } else if (key == "endloop") {
+                    /* Marks end of current primitive
+                       we don't need to do anything specific
+                       here */
+                } else if (key == "endfacet") {
+                    /* Marks end of current facet, hence reset readFacet flag */
+                    isFacetRead = false;
+                    outerCount = 0;
+                }
+                else if (key == "vertex") {
+                    currObj.mPositions.push_back(readVertex(line));
+                }
+            }
+            pObjects.push_back(currObj);
+        }
+    }
+
+    objFile.close();
+
     return true;
 }
 
 /*
-* Reads binary STL file assuming the format as described in
-* https://en.wikipedia.org/wiki/STL_(file_format). After the end of first
-* object, we assume that the next object's information starts with number of
-* triangles and the format continues.
-*/
+ * Reads binary STL file assuming the format as described in
+ * https://en.wikipedia.org/wiki/STL_(file_format). After the end of first
+ * object, we assume that the next object's information starts with number of
+ * triangles and the format continues.
+ */
 template<typename T = float>
 bool readBinarySTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
 {
@@ -93,6 +170,37 @@ template<typename T = float>
 bool writeAsciiSTL(const std::vector< STLData<T> > &pObjects,
                    const char* pFileName)
 {
+    typedef std::vector< STLData<T> >::const_iterator CSTLIter;
+    typedef std::vector< Vec3<float> >::const_iterator CVec3Iter;
+    typedef std::vector< Vec4<float> >::const_iterator CVec4Iter;
+
+    std::ofstream objFile(pFileName);
+
+    if (!objFile.is_open())
+        return false;
+
+    for (CSTLIter obj = pObjects.begin(); obj != pObjects.end(); ++obj) {
+        objFile << "solid " << std::endl;
+
+        CVec4Iter v = obj->mPositions.begin();
+        for (CVec3Iter f = obj->mNormals.begin(); f != obj->mNormals.end(); ++f) {
+            objFile << "facet normal " << f->x << " " << f->y << " " << f->z << " " << std::endl;
+            objFile << "outer loop" << std::endl;
+            objFile << "vertex " << v->x << " " << v->y << " " << v->z << std::endl;
+            ++v;
+            objFile << "vertex " << v->x << " " << v->y << " " << v->z << std::endl;
+            ++v;
+            objFile << "vertex " << v->x << " " << v->y << " " << v->z << std::endl;
+            ++v;
+            objFile << "endloop" << std::endl;
+            objFile << "endfacet" << std::endl;
+        }
+
+        objFile << "endsolid" << std::endl;
+    }
+
+    objFile.close();
+
     return true;
 }
 
@@ -176,9 +284,9 @@ bool read(std::vector< STLData<T> > &pObjects, const char* pFileName)
 }
 
 /*
-* Writes STL files in a specified format
-* "ascii" or "binary"
-*/
+ * Writes STL files in a specified format
+ * "ascii" or "binary"
+ */
 template<typename T>
 bool write(const std::vector< STLData<T> > &pObjects, const char* pFileName,
            const STLFormat pFormat)
@@ -195,5 +303,5 @@ template<typename T>
 bool computeVertexNormals(const std::vector< STLData<T> > &pObjects,
                           std::vector< std::vector< Vec3<float> > > &pNormals)
 {
-    return true;
+    return false;
 }
