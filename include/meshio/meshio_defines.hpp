@@ -15,6 +15,11 @@
 namespace meshio
 {
 
+enum STLFormat {
+    STL_ASCII = 0,
+    STL_BINARY = 1
+};
+
 template<typename T>
 struct Vec4 {
     T x;

@@ -13,7 +13,6 @@
 
 using namespace std;
 using namespace meshio;
-using namespace stl;
 
 TEST(MeshIO, Read_BinarySTL)
 {
@@ -25,10 +24,10 @@ TEST(MeshIO, Read_BinarySTL)
 
     /* Read stl file using library function */
     vector< STLData<float> > objs;
-    readSTL<float>(objs, TEST_DIR "/binary.stl");
+    stl::read<float>(objs, TEST_DIR "/binary.stl");
 
     /* Write STL file */
-    writeSTL<float>(objs, TEST_DIR "/binary2binary.stl", "binary");
+    stl::write<float>(objs, TEST_DIR "/binary2binary.stl", meshio::STL_BINARY);
 
     for(unsigned i = 0; i < objs.size(); ++i)
         objs[i].clear();
