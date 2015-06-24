@@ -11,7 +11,6 @@
 #define __STL_HPP__
 
 #include <vector>
-#include <iostream>
 #include <string>
 #include <fstream>
 #include <sstream>
