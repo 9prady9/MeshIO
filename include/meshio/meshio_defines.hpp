@@ -28,6 +28,18 @@ struct Vec3 {
     T x;
     T y;
     T z;
+    struct Vec3& operator+=(const struct Vec3& pVec3) {
+        x += pVec3.x;
+        y += pVec3.y;
+        z += pVec3.z;
+        return *this;
+    }
+    struct Vec3& operator/=(const int pDiv) {
+        x /= pDiv;
+        y /= pDiv;
+        z /= pDiv;
+        return *this;
+    }
 };
 
 template<typename T>

@@ -27,6 +27,13 @@ TEST(MeshIO, Read_BinarySTL)
     vector< STLData<float> > objs;
     readSTL<float>(objs, TEST_DIR "/binary.stl");
 
+    /* Write STL file */
+    writeSTL<float>(objs, TEST_DIR "/binary2binary.stl", "binary");
+
+    for(unsigned i = 0; i < objs.size(); ++i)
+        objs[i].clear();
+    objs.clear();
+
     /* read gold data using regular file reading */
 
     /* Now write another helper function that helps you compare two
