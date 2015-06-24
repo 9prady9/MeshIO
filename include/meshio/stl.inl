@@ -36,7 +36,7 @@ bool readAsciiSTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
         return false;
 
     while (std::getline(objFile, line)) {
-        std:stringstream lineSS(line);
+        std::stringstream lineSS(line);
         std::string keyWord;
 
         lineSS >> keyWord;
@@ -170,9 +170,9 @@ template<typename T = float>
 bool writeAsciiSTL(const std::vector< STLData<T> > &pObjects,
                    const char* pFileName)
 {
-    typedef std::vector< STLData<T> >::const_iterator CSTLIter;
-    typedef std::vector< Vec3<float> >::const_iterator CVec3Iter;
-    typedef std::vector< Vec4<float> >::const_iterator CVec4Iter;
+    typedef typename std::vector< STLData<T> >::const_iterator CSTLIter;
+    typedef typename std::vector< Vec3<float> >::const_iterator CVec3Iter;
+    typedef typename std::vector< Vec4<float> >::const_iterator CVec4Iter;
 
     std::ofstream objFile(pFileName);
 
