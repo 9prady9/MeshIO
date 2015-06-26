@@ -26,6 +26,34 @@ struct Vec4 {
     T y;
     T z;
     T w;
+
+    Vec4(T pX, T pY, T pZ, T pW) {
+        x = pX;
+        y = pY;
+        z = pZ;
+        w = pW;
+    }
+
+    Vec4(T pX, T pY, T pZ) {
+        Vec4(pX, pY, pZ, (T)0);
+    }
+
+    Vec4(T pX, T pY) {
+        Vec4(pX, pY, (T)0, (T)0);
+    }
+
+    Vec4(T pX) {
+        Vec4(pX, (T)0, (T)0, (T)0);
+    }
+
+    Vec4() {
+        Vec4((T)0, (T)0, (T)0, (T)0);
+    }
+
+    bool equal(Vec4& pVec4) {
+        return (pVec4.x == x && pVec4.y == y && pVec4.z == z &&
+                pVec4.w == w);
+    }
 };
 
 template<typename T>
@@ -33,12 +61,36 @@ struct Vec3 {
     T x;
     T y;
     T z;
+
+    Vec3(T pX, T pY, T pZ) {
+        x = pX;
+        y = pY;
+        z = pZ;
+    }
+
+    Vec3(T pX, T pY) {
+        Vec3(pX, pY, (T)0);
+    }
+
+    Vec3(T pX) {
+        Vec3(pX, (T)0, (T)0);
+    }
+
+    Vec3() {
+        Vec3((T)0, (T)0, (T)0);
+    }
+
+    bool equal(Vec3& pVec3) {
+        return (pVec3.x == x && pVec3.y == y && pVec3.z == z);
+    }
+
     struct Vec3& operator+=(const struct Vec3& pVec3) {
         x += pVec3.x;
         y += pVec3.y;
         z += pVec3.z;
         return *this;
     }
+
     struct Vec3& operator/=(const int pDiv) {
         x /= pDiv;
         y /= pDiv;
@@ -98,6 +150,20 @@ struct STLData {
     void clear() {
         mPositions.clear();
         mNormals.clear();
+    }
+
+    bool equal(STLData<T>& pSTLObj) {
+        if(mPositions.size() != pSTLObj.mPositions.size())
+            return false;
+        if(mNormals.size() != pSTLObj.mNormals.size())
+            return false;
+        for(unsigned i = 0; i < mPositions.size(); ++i)
+            if(!mPositions[i].equal(pSTLObj.mPositions[i]))
+                return false;
+        for(unsigned i = 0; i < mNormals.size(); ++i)
+            if(!mNormals[i].equal(pSTLObj.mNormals[i]))
+                return false;
+        return true;
     }
 };
 

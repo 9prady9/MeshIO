@@ -14,54 +14,64 @@
 using namespace std;
 using namespace meshio;
 
-TEST(STL, ReadWrite_BinaryFile)
+#include "initialize_reference_objs.inl"
+
+TEST(STL, READ_BINARY)
 {
-    // FIXME
-    /*
-    The tests still need to be fixed. This message for Laxman to get to know how to
-    write unit tests using google test.
-    */
+    /* Reference STLData object */
+    vector< STLData<float> > referenceObjs;
+    initializeReferenceSTLObj(referenceObjs);
 
     /* Read stl file using library function */
     vector< STLData<float> > objs;
-    stl::read<float>(objs, TEST_DIR "/binary.stl");
+    stl::read<float>(objs, TEST_DIR "/cube_binary.stl");
 
-    /* Write STL file */
-    stl::write<float>(objs, TEST_DIR "/binary2binary.stl", meshio::STL_BINARY);
+    EXPECT_TRUE(objs[0].equal(referenceObjs[0]) == true);
+
+    for(unsigned i = 0; i < referenceObjs.size(); ++i)
+        referenceObjs[i].clear();
+    referenceObjs.clear();
 
     for(unsigned i = 0; i < objs.size(); ++i)
         objs[i].clear();
     objs.clear();
-
-    /* read gold data using regular file reading */
-
-    /* Now write another helper function that helps you compare two
-       objects that has same type of data.
-
-       For example, iIn our case we can handle simple objects like square with
-       hard coded data and much bigger objects can be compared
-       by cross checking data read from different formats or something
-       like that.
-    */
-
-    /* use the boolean returned by the comparison helper functon
-    to find check for expected result which is TRUE because the
-    results should match for our test to pass. This can be done
-    using Google Test macros such as EXPECT_EQ (Check Below)
-    */
-
-    EXPECT_TRUE(true == true/* Ideally you should your comparison function called here*/);
 }
 
 TEST(STL, READ_ASCII)
 {
+    /* Reference STLData object */
+    vector< STLData<float> > referenceObjs;
+    initializeReferenceSTLObj(referenceObjs);
+
     vector< STLData<float> > objs;
-    stl::read<float>(objs, TEST_DIR "/ascii.stl");
+    stl::read<float>(objs, TEST_DIR "/cube_ascii.stl");
+
+    EXPECT_TRUE(objs[0].equal(referenceObjs[0]) == true);
+
+    for(unsigned i = 0; i < referenceObjs.size(); ++i)
+        referenceObjs[i].clear();
+    referenceObjs.clear();
+
+    for(unsigned i = 0; i < objs.size(); ++i)
+        objs[i].clear();
+    objs.clear();
 }
 
 TEST(STL, WRITE_ASCII)
 {
+    /* Reference STLData object */
+    vector< STLData<float> > referenceObjs;
+    initializeReferenceSTLObj(referenceObjs);
+
     vector< STLData<float> > objs;
-    stl::read<float>(objs, TEST_DIR "/ascii.stl");
-    stl::write(objs, TEST_DIR "/ascii2ascii.stl");
+    stl::read<float>(objs, TEST_DIR "/cube_ascii.stl");
+    stl::write(objs, TEST_DIR "/cube_ascii2ascii.stl");
+
+    for(unsigned i = 0; i < referenceObjs.size(); ++i)
+        referenceObjs[i].clear();
+    referenceObjs.clear();
+
+    for(unsigned i = 0; i < objs.size(); ++i)
+        objs[i].clear();
+    objs.clear();
 }
