@@ -26,14 +26,9 @@ TEST(STL, READ_BINARY)
     vector< STLData<float> > objs;
     stl::read<float>(objs, TEST_DIR "/cube_binary.stl");
 
-    EXPECT_TRUE(objs[0].equal(referenceObjs[0]) == true);
+    EXPECT_TRUE((objs[0] == referenceObjs[0]) == true);
 
-    for(unsigned i = 0; i < referenceObjs.size(); ++i)
-        referenceObjs[i].clear();
     referenceObjs.clear();
-
-    for(unsigned i = 0; i < objs.size(); ++i)
-        objs[i].clear();
     objs.clear();
 }
 
@@ -46,14 +41,9 @@ TEST(STL, READ_ASCII)
     vector< STLData<float> > objs;
     stl::read<float>(objs, TEST_DIR "/cube_ascii.stl");
 
-    EXPECT_TRUE(objs[0].equal(referenceObjs[0]) == true);
+    EXPECT_TRUE((objs[0] == referenceObjs[0]) == true);
 
-    for(unsigned i = 0; i < referenceObjs.size(); ++i)
-        referenceObjs[i].clear();
     referenceObjs.clear();
-
-    for(unsigned i = 0; i < objs.size(); ++i)
-        objs[i].clear();
     objs.clear();
 }
 
@@ -67,11 +57,6 @@ TEST(STL, WRITE_ASCII)
     stl::read<float>(objs, TEST_DIR "/cube_ascii.stl");
     stl::write(objs, TEST_DIR "/cube_ascii2ascii.stl");
 
-    for(unsigned i = 0; i < referenceObjs.size(); ++i)
-        referenceObjs[i].clear();
     referenceObjs.clear();
-
-    for(unsigned i = 0; i < objs.size(); ++i)
-        objs[i].clear();
     objs.clear();
 }
