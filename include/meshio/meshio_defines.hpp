@@ -11,6 +11,7 @@
 #define __MESHIO_DEFINES_HPP__
 
 #include <vector>
+#include "vectors.hpp"
 
 namespace meshio
 {
@@ -18,39 +19,6 @@ namespace meshio
 enum STLFormat {
     STL_ASCII = 0,
     STL_BINARY = 1
-};
-
-template<typename T>
-struct Vec4 {
-    T x;
-    T y;
-    T z;
-    T w;
-};
-
-template<typename T>
-struct Vec3 {
-    T x;
-    T y;
-    T z;
-    struct Vec3& operator+=(const struct Vec3& pVec3) {
-        x += pVec3.x;
-        y += pVec3.y;
-        z += pVec3.z;
-        return *this;
-    }
-    struct Vec3& operator/=(const int pDiv) {
-        x /= pDiv;
-        y /= pDiv;
-        z /= pDiv;
-        return *this;
-    }
-};
-
-template<typename T>
-struct Vec2 {
-    T x;
-    T y;
 };
 
 template<class T>
@@ -61,6 +29,12 @@ class Mesh {
     std::vector< Vec2<float> > mTexcoords;
     std::vector< Vec4<float> > mColors;
     std::vector< unsigned > mIndices;
+
+    Mesh() {}
+
+    ~Mesh() {
+        this->clear();
+    }
 
     void resize(unsigned pSize) {
         mPositions.resize(pSize);
@@ -82,13 +56,18 @@ class Mesh {
     }
 };
 
-/*
- * struct to store data from STL file
- */
-template<typename T>
-struct STLData {
+/* STLData class to store data from STL file */
+template<class T>
+class STLData {
+  public:
     std::vector< Vec4<T> >      mPositions;
     std::vector< Vec3<float> >  mNormals;
+
+    STLData() {}
+
+    ~STLData() {
+        this->clear();
+    }
 
     void resize(unsigned pNumTriangles) {
         mPositions.resize(3*pNumTriangles);
@@ -98,6 +77,24 @@ struct STLData {
     void clear() {
         mPositions.clear();
         mNormals.clear();
+    }
+
+    bool operator==(STLData<T>& pSTLObj) {
+        if(this->mPositions.size() != pSTLObj.mPositions.size())
+            return false;
+
+        if(this->mNormals.size() != pSTLObj.mNormals.size())
+            return false;
+
+        for(unsigned i = 0; i < mPositions.size(); ++i)
+            if(!(this->mPositions[i] == pSTLObj.mPositions[i]))
+                return false;
+
+        for(unsigned i = 0; i < mNormals.size(); ++i)
+            if(!(this->mNormals[i] == pSTLObj.mNormals[i]))
+                return false;
+
+        return true;
     }
 };
 
