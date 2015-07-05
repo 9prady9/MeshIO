@@ -21,15 +21,17 @@ before_install:
     - g++ --version
 
 before_script:
-    - mkdir build
-    - cd build
+    - cd ${TRAVIS_BUILD_DIR}
     - lcov --directory . --zerocounters
-    - cmake .. -DBUILD_COVERAGE:BOOL=ON
 
 script:
+    - cd ${TRAVIS_BUILD_DIR}
+    - cmake . -DBUILD_COVERAGE:BOOL=ON
     - make
+    - ctest
 
 after_success:
+    - cd ${TRAVIS_BUILD_DIR}
     # capture coverage info
     - lcov --directory . --capture --output-file coverage.info
     # filter out system and test code

@@ -21,28 +21,29 @@ IF(UNIX)
 ENDIF()
 
 IF(BUILD_EXAMPLES)
-	ADD_SUBDIRECTORY(examples)
+    ADD_SUBDIRECTORY(examples)
 ENDIF()
 
 IF(BUILD_TESTS)
-	ADD_SUBDIRECTORY(test)
+    ENABLE_TESTING()
+    ADD_SUBDIRECTORY(test)
 ENDIF()
 
 ## Following commented out changes work only on CMAKE version >=3.0
 #ADD_LIBRARY(MeshIO INTERFACE)
 #TARGET_INCLUDE_DIRECTORIES(MeshIO INTERFACE
-#			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-#			$<INSTALL_INTERFACE:include/meshio>
-#			)
+#           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+#           $<INSTALL_INTERFACE:include/meshio>
+#           )
 
 #INSTALL(TARGETS MeshIO EXPORT meshioExport)
 #INSTALL(EXPORT meshioExport NAMESPACE Upstream::
-#		DESTINATION lib/cmake/MeshIO
-#		)
+#       DESTINATION lib/cmake/MeshIO
+#       )
 
 INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include"
-		DESTINATION .
-		COMPONENT Headers
-		FILES_MATCHING
-		PATTERN "*.hpp"
-		)
+        DESTINATION .
+        COMPONENT Headers
+        FILES_MATCHING
+        PATTERN "*.hpp"
+        )
