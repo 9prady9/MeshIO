@@ -59,3 +59,14 @@ TEST(STL, WRITE_ASCII)
     referenceObjs.clear();
     objs.clear();
 }
+
+TEST(STL, CROSS_CHECK)
+{
+    vector< STLData<float> > binReadObjs;
+    stl::read<float>(binReadObjs, TEST_DIR "/cube_binary.stl");
+
+    vector< STLData<float> > asciiReadObjs;
+    stl::read<float>(asciiReadObjs, TEST_DIR "/cube_ascii.stl");
+
+    EXPECT_TRUE((binReadObjs[0] == asciiReadObjs[0]) == true);
+}
