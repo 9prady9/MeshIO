@@ -182,13 +182,13 @@ bool writeAsciiSTL(const char* pFileName, const std::vector< STLData<T> > &pObje
 
         CVec4Iter v = obj->mPositions.begin();
         for (CVec3Iter f = obj->mNormals.begin(); f != obj->mNormals.end(); ++f) {
-            objFile << "facet normal " << f->x << " " << f->y << " " << f->z << std::endl;
+            objFile << "facet normal " << std::scientific << f->x << " " << f->y << " " << f->z << std::endl;
             objFile << "outer loop" << std::endl;
-            objFile << "vertex " << v->x << " " << v->y << " " << v->z << std::endl;
+            objFile << "vertex " << std::scientific << v->x << " " << v->y << " " << v->z << std::endl;
             ++v;
-            objFile << "vertex " << v->x << " " << v->y << " " << v->z << std::endl;
+            objFile << "vertex " << std::scientific << v->x << " " << v->y << " " << v->z << std::endl;
             ++v;
-            objFile << "vertex " << v->x << " " << v->y << " " << v->z << std::endl;
+            objFile << "vertex " << std::scientific << v->x << " " << v->y << " " << v->z << std::endl;
             ++v;
             objFile << "endloop" << std::endl;
             objFile << "endfacet" << std::endl;
