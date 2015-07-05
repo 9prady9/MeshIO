@@ -155,7 +155,6 @@ bool readBinarySTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
             ifs.read((char *)&attribByteCount, sizeUInt16);
         }
         pObjects.push_back(stlObject);
-        stlObject.clear();
 
         numTriangles = 0;
         ifs.read((char *)&numTriangles, sizeof(uint32_t));
@@ -167,8 +166,7 @@ bool readBinarySTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
 }
 
 template<typename T = float>
-bool writeAsciiSTL(const std::vector< STLData<T> > &pObjects,
-                   const char* pFileName)
+bool writeAsciiSTL(const char* pFileName, const std::vector< STLData<T> > &pObjects)
 {
     typedef typename std::vector< STLData<T> >::const_iterator CSTLIter;
     typedef typename std::vector< Vec3<float> >::const_iterator CVec3Iter;
@@ -184,7 +182,7 @@ bool writeAsciiSTL(const std::vector< STLData<T> > &pObjects,
 
         CVec4Iter v = obj->mPositions.begin();
         for (CVec3Iter f = obj->mNormals.begin(); f != obj->mNormals.end(); ++f) {
-            objFile << "facet normal " << f->x << " " << f->y << " " << f->z << " " << std::endl;
+            objFile << "facet normal " << f->x << " " << f->y << " " << f->z << std::endl;
             objFile << "outer loop" << std::endl;
             objFile << "vertex " << v->x << " " << v->y << " " << v->z << std::endl;
             ++v;
@@ -205,8 +203,7 @@ bool writeAsciiSTL(const std::vector< STLData<T> > &pObjects,
 }
 
 template<typename T = float>
-bool writeBinarySTL(const std::vector< STLData<T> > &pObjects,
-                    const char* pFileName)
+bool writeBinarySTL(const char* pFileName, const std::vector< STLData<T> > &pObjects)
 {
     uint32_t numTriangles;
     uint16_t attribByteCount = 0;
@@ -231,16 +228,14 @@ bool writeBinarySTL(const std::vector< STLData<T> > &pObjects,
     for (unsigned object = 0; object < objectCount; ++object) {
         numTriangles = pObjects[object].mNormals.size();
         ofs.write((char *)&numTriangles, sizeof(uint32_t));
-        Vec4<T> position;
-        Vec3<float> normal;
 
         for (unsigned facet = 0; facet < numTriangles; ++facet) {
-            normal = pObjects[object].mNormals[facet];
+            Vec3<float> normal = pObjects[object].mNormals[facet];
             ofs.write((char *)&normal.x, sizeFloat);
             ofs.write((char *)&normal.y, sizeFloat);
             ofs.write((char *)&normal.z, sizeFloat);
             for (short i = 0; i < 3; ++i) {
-                position = pObjects[object].mPositions[3 * facet + i];
+                Vec4<T> position = pObjects[object].mPositions[3 * facet + i];
                 ofs.write((char *)&position.x, sizeFloat);
                 ofs.write((char *)&position.y, sizeFloat);
                 ofs.write((char *)&position.z, sizeFloat);
@@ -288,20 +283,12 @@ bool read(std::vector< STLData<T> > &pObjects, const char* pFileName)
  * "ascii" or "binary"
  */
 template<typename T>
-bool write(const std::vector< STLData<T> > &pObjects, const char* pFileName,
-           const STLFormat pFormat)
+bool write(const char* pFileName, const STLFormat pFormat,
+    const std::vector< STLData<T> > &pObjects)
 {
     switch (pFormat) {
-        case STL_ASCII: return writeAsciiSTL(pObjects, pFileName);
-        case STL_BINARY: return writeBinarySTL(pObjects, pFileName);
+    case STL_ASCII: return writeAsciiSTL(pFileName, pObjects);
+    case STL_BINARY: return writeBinarySTL(pFileName, pObjects);
         default: return false;
     }
-}
-
-
-template<typename T>
-bool computeVertexNormals(const std::vector< STLData<T> > &pObjects,
-                          std::vector< std::vector< Vec3<float> > > &pNormals)
-{
-    return false;
 }

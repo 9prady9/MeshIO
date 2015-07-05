@@ -26,12 +26,8 @@ template<typename T=float>
 bool read(std::vector< STLData<T> > &pObjects, const char* pFileName);
 
 template<typename T=float>
-bool write(const std::vector< STLData<T> > &pObjects, const char* pFileName,
-           const STLFormat pFormat = STL_ASCII);
-
-template<typename T>
-bool computeVertexNormals(const std::vector< STLData<T> > &pObjects,
-                          std::vector< std::vector< Vec3<float> > > &pNormals);
+bool write(const char* pFileName, const STLFormat pFormat,
+           const std::vector< STLData<T> > &pObjects);
 
 #include "stl.inl"
 

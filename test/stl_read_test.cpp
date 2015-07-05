@@ -55,7 +55,7 @@ TEST(STL, WRITE_ASCII)
 
     vector< STLData<float> > objs;
     stl::read<float>(objs, TEST_DIR "/cube_ascii.stl");
-    stl::write(objs, TEST_DIR "/cube_ascii2ascii.stl");
+    stl::write(TEST_DIR "/cube_ascii2ascii.stl", meshio::STL_ASCII, objs);
 
     referenceObjs.clear();
     objs.clear();
