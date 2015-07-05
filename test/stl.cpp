@@ -25,7 +25,7 @@ TEST(STL, READ_BINARY)
     vector< STLData<float> > objs;
     stl::read<float>(objs, TEST_DIR "/cube_binary.stl");
 
-    EXPECT_TRUE((objs[0] == referenceObjs[0]) == true);
+    EXPECT_TRUE(objs[0] == referenceObjs[0]);
 
     referenceObjs.clear();
     objs.clear();
@@ -40,7 +40,7 @@ TEST(STL, READ_ASCII)
     vector< STLData<float> > objs;
     stl::read<float>(objs, TEST_DIR "/cube_ascii.stl");
 
-    EXPECT_TRUE((objs[0] == referenceObjs[0]) == true);
+    EXPECT_TRUE(objs[0] == referenceObjs[0]);
 
     referenceObjs.clear();
     objs.clear();
@@ -68,5 +68,5 @@ TEST(STL, CROSS_CHECK)
     vector< STLData<float> > asciiReadObjs;
     stl::read<float>(asciiReadObjs, TEST_DIR "/cube_ascii.stl");
 
-    EXPECT_TRUE((binReadObjs[0] == asciiReadObjs[0]) == true);
+    EXPECT_TRUE(binReadObjs[0] == asciiReadObjs[0]);
 }
