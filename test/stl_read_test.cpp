@@ -9,12 +9,11 @@
 
 #include <gtest/gtest.h>
 #include <meshio/stl.hpp>
-#include <vector>
+#include "testHelpers.hpp"
 
 using namespace std;
 using namespace meshio;
 
-#include "initialize_reference_objs.inl"
 
 TEST(STL, READ_BINARY)
 {
