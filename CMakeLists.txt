@@ -6,6 +6,7 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeMod
 
 OPTION(BUILD_EXAMPLES "Build examples" OFF)
 OPTION(BUILD_TESTS "Build Tests" ON)
+OPTION(BUILD_COVERAGE "Create test coverage report" OFF)
 OPTION(USE_SYSTEM_GTEST "Use GTEST from system libraries" OFF)
 OPTION(USE_RELATIVE_TEST_DIR "Use relative paths for the test data directory(For continious integration(CI) purposes only)" OFF)
 
