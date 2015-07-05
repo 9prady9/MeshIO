@@ -156,7 +156,7 @@ T dot(const Vec2<T>& lhs, const Vec2<T>& rhs) {
 /* Cross product of two vectors */
 template<typename T>
 Vec3<T> cross(const Vec2<T>& lhs, const Vec2<T>& rhs) {
-    return Vec3(0, 0, lhs.x*rhs.y - lhs.y*rhs.x);
+    return Vec3<T>(0, 0, lhs.x*rhs.y - lhs.y*rhs.x);
 }
 
 /* Dot product of two vectors */
@@ -168,7 +168,7 @@ T dot(const Vec3<T> &lhs, const Vec3<T>& rhs) {
 /* Cross product of three dimensional vectors */
 template<typename T>
 Vec3<T> cross(const Vec3<T> &lhs, const Vec3<T>& rhs) {
-    return Vec3(lhs.y*rhs.z - lhs.z*rhs.y,
+    return Vec3<T>(lhs.y*rhs.z - lhs.z*rhs.y,
                 lhs.z*rhs.x - lhs.x*rhs.z,
                 lhs.x*rhs.y - lhs.y*rhs.x);
 }
