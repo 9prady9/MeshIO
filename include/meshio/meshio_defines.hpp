@@ -79,7 +79,7 @@ class STLData {
         mNormals.clear();
     }
 
-    bool operator==(STLData<T>& pSTLObj) {
+    bool operator==(const STLData<T>& pSTLObj) {
         if(this->mPositions.size() != pSTLObj.mPositions.size())
             return false;
 

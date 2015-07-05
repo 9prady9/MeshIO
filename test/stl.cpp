@@ -9,12 +9,11 @@
 
 #include <gtest/gtest.h>
 #include <meshio/stl.hpp>
-#include <vector>
+#include "testHelpers.hpp"
 
 using namespace std;
 using namespace meshio;
 
-#include "initialize_reference_objs.inl"
 
 TEST(STL, READ_BINARY)
 {
@@ -26,7 +25,7 @@ TEST(STL, READ_BINARY)
     vector< STLData<float> > objs;
     stl::read<float>(objs, TEST_DIR "/cube_binary.stl");
 
-    EXPECT_TRUE((objs[0] == referenceObjs[0]) == true);
+    EXPECT_TRUE(objs[0] == referenceObjs[0]);
 
     referenceObjs.clear();
     objs.clear();
@@ -41,7 +40,7 @@ TEST(STL, READ_ASCII)
     vector< STLData<float> > objs;
     stl::read<float>(objs, TEST_DIR "/cube_ascii.stl");
 
-    EXPECT_TRUE((objs[0] == referenceObjs[0]) == true);
+    EXPECT_TRUE(objs[0] == referenceObjs[0]);
 
     referenceObjs.clear();
     objs.clear();
@@ -55,8 +54,19 @@ TEST(STL, WRITE_ASCII)
 
     vector< STLData<float> > objs;
     stl::read<float>(objs, TEST_DIR "/cube_ascii.stl");
-    stl::write(objs, TEST_DIR "/cube_ascii2ascii.stl");
+    stl::write(TEST_DIR "/cube_ascii2ascii.stl", meshio::STL_ASCII, objs);
 
     referenceObjs.clear();
     objs.clear();
+}
+
+TEST(STL, CROSS_CHECK)
+{
+    vector< STLData<float> > binReadObjs;
+    stl::read<float>(binReadObjs, TEST_DIR "/cube_binary.stl");
+
+    vector< STLData<float> > asciiReadObjs;
+    stl::read<float>(asciiReadObjs, TEST_DIR "/cube_ascii.stl");
+
+    EXPECT_TRUE(binReadObjs[0] == asciiReadObjs[0]);
 }
