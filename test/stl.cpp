@@ -46,17 +46,21 @@ TEST(STL, READ_ASCII)
     objs.clear();
 }
 
-TEST(STL, WRITE_ASCII)
+TEST(STL, WRITE_BINARY)
 {
-    /* Reference STLData object */
-    vector< STLData<float> > referenceObjs;
-    initializeReferenceSTLObj(referenceObjs);
-
     vector< STLData<float> > objs;
     stl::read<float>(objs, TEST_DIR "/cube_ascii.stl");
-    stl::write(TEST_DIR "/cube_ascii2ascii.stl", meshio::STL_ASCII, objs);
+    stl::write(TEST_DIR "/cube_ascii2binary.stl", meshio::STL_BINARY, objs);
 
-    referenceObjs.clear();
+    objs.clear();
+}
+
+TEST(STL, WRITE_ASCII)
+{
+    vector< STLData<float> > objs;
+    stl::read<float>(objs, TEST_DIR "/cube_binary.stl");
+    stl::write(TEST_DIR "/cube_binary2ascii.stl", meshio::STL_ASCII, objs);
+
     objs.clear();
 }
 
