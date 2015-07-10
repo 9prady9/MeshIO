@@ -7,22 +7,39 @@
  * file.
  */
 
-Vec3<float> readNormal(const std::string& pLine)
+template<typename T=float>
+Vec3<T> readNormal(const std::string& pLine)
 {
-    Vec3<float> N;
+    Vec3<T> N;
+    float nx, ny, nz;
     std::stringstream lineSS(pLine);
     std::string facet, normal;
-    lineSS >> facet >> normal >> N.x >> N.y >> N.z;
+
+    lineSS >> facet >> normal >> nx >> ny >> nz;
+
+    N.SetX(nx);
+    N.SetY(ny);
+    N.SetZ(nz);
+
     return N;
 }
 
-Vec4<float> readVertex(const std::string& pLine)
+template<typename T>
+Vec4<T> readVertex(const std::string& pLine)
 {
-    Vec4<float> V;
+    Vec4<T> V;
+    float vx, vy, vz, vw;
     std::stringstream lineSS(pLine);
     std::string vertex;
-    lineSS >> vertex >> V.x >> V.y >> V.z;
-    V.w = 1.0;
+
+    lineSS >> vertex >> vx >> vy >> vz;
+    vw = static_cast<T>(1.0);
+
+    V.SetX(vx);
+    V.SetY(vy);
+    V.SetZ(vz);
+    V.SetW(vw);
+
     return V;
 }
 
@@ -78,7 +95,7 @@ bool readAsciiSTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
                     outerCount = 0;
                 }
                 else if (key == "vertex") {
-                    currObj.mPositions.push_back(readVertex(line));
+                    currObj.mPositions.push_back(readVertex<T>(line));
                 }
             }
             pObjects.push_back(currObj);
@@ -127,7 +144,7 @@ bool readBinarySTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
         Vec3<float> normal;
 
         // Default assignment
-        position.w = (T)1.;
+        position.SetW(static_cast<T>(1.));
 
         for (uint32_t facet = 0; facet < numTriangles; ++facet) {
             values.clear();
@@ -135,9 +152,9 @@ bool readBinarySTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
                 ifs.read((char *)&value, sizeFloat);
                 values.push_back(value);
             }
-            normal.x = values[0];
-            normal.y = values[1];
-            normal.z = values[2];
+            normal.SetX(values[0]);
+            normal.SetY(values[1]);
+            normal.SetZ(values[2]);
             stlObject.mNormals[facet] = normal;
 
             for (short i = 0; i < 3; ++i) {
@@ -146,9 +163,9 @@ bool readBinarySTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
                     ifs.read((char *)&value, sizeFloat);
                     values.push_back(value);
                 }
-                position.x = values[0];
-                position.y = values[1];
-                position.z = values[2];
+                position.SetX(values[0]);
+                position.SetY(values[1]);
+                position.SetZ(values[2]);
                 stlObject.mPositions[(3 * facet) + i] = position;
             }
 
@@ -170,7 +187,7 @@ bool writeAsciiSTL(const char* pFileName, const std::vector< STLData<T> > &pObje
 {
     typedef typename std::vector< STLData<T> >::const_iterator CSTLIter;
     typedef typename std::vector< Vec3<float> >::const_iterator CVec3Iter;
-    typedef typename std::vector< Vec4<float> >::const_iterator CVec4Iter;
+    typedef typename std::vector< Vec4<T> >::const_iterator CVec4Iter;
 
     std::ofstream objFile(pFileName);
 
@@ -181,14 +198,19 @@ bool writeAsciiSTL(const char* pFileName, const std::vector< STLData<T> > &pObje
         objFile << "solid " << std::endl;
 
         CVec4Iter v = obj->mPositions.begin();
-        for (CVec3Iter f = obj->mNormals.begin(); f != obj->mNormals.end(); ++f) {
-            objFile << "facet normal " << std::scientific << f->x << " " << f->y << " " << f->z << std::endl;
+        for (CVec3Iter f = obj->mNormals.begin(); f != obj->mNormals.end();
+             ++f) {
+            objFile << "facet normal " << std::scientific << f->X() << " "
+                    << f->Y() << " " << f->Z() << std::endl;
             objFile << "outer loop" << std::endl;
-            objFile << "vertex " << std::scientific << v->x << " " << v->y << " " << v->z << std::endl;
+            objFile << "vertex " << std::scientific << v->X() << " "
+                    << v->Y() << " " << v->Z() << std::endl;
             ++v;
-            objFile << "vertex " << std::scientific << v->x << " " << v->y << " " << v->z << std::endl;
+            objFile << "vertex " << std::scientific << v->X() << " "
+                    << v->Y() << " " << v->Z() << std::endl;
             ++v;
-            objFile << "vertex " << std::scientific << v->x << " " << v->y << " " << v->z << std::endl;
+            objFile << "vertex " << std::scientific << v->X() << " "
+                    << v->Y() << " " << v->Z() << std::endl;
             ++v;
             objFile << "endloop" << std::endl;
             objFile << "endfacet" << std::endl;
@@ -227,20 +249,27 @@ bool writeBinarySTL(const char* pFileName, const std::vector< STLData<T> > &pObj
 
     for (unsigned object = 0; object < objectCount; ++object) {
         numTriangles = pObjects[object].mNormals.size();
-        ofs.write((char *)&numTriangles, sizeof(uint32_t));
+        ofs.write(reinterpret_cast<char *>(&(numTriangles)), sizeof(uint32_t));
 
         for (unsigned facet = 0; facet < numTriangles; ++facet) {
             Vec3<float> normal = pObjects[object].mNormals[facet];
-            ofs.write((char *)&normal.x, sizeFloat);
-            ofs.write((char *)&normal.y, sizeFloat);
-            ofs.write((char *)&normal.z, sizeFloat);
+            ofs.write(reinterpret_cast<char *>(
+                            const_cast<float *>(&(normal.X()))), sizeFloat);
+            ofs.write(reinterpret_cast<char *>(
+                            const_cast<float *>(&(normal.Y()))), sizeFloat);
+            ofs.write(reinterpret_cast<char *>(
+                            const_cast<float *>(&(normal.Z()))), sizeFloat);
             for (short i = 0; i < 3; ++i) {
                 Vec4<T> position = pObjects[object].mPositions[3 * facet + i];
-                ofs.write((char *)&position.x, sizeFloat);
-                ofs.write((char *)&position.y, sizeFloat);
-                ofs.write((char *)&position.z, sizeFloat);
+                ofs.write(reinterpret_cast<char *>(
+                            const_cast<float *>(&(position.X()))), sizeFloat);
+                ofs.write(reinterpret_cast<char *>(
+                            const_cast<float *>(&(position.Y()))), sizeFloat);
+                ofs.write(reinterpret_cast<char *>(
+                            const_cast<float *>(&(position.Z()))), sizeFloat);
             }
-            ofs.write((char *)&attribByteCount, sizeUInt16);
+            ofs.write(reinterpret_cast<char *>(
+                            &(attribByteCount)), sizeUInt16);
         }
     }
 
