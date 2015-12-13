@@ -1,49 +1,58 @@
-sudo: false
+#-----------------------------------------------------------------------------
+#
+#  Configuration for continuous integration service at travis-ci.org
+#
+#-----------------------------------------------------------------------------
+#
+# This file is copy of https://github.com/mapbox/protozero/blob/master/.travis.yml
 
 language: cpp
 
-compiler:
-    - clang++
-    - g++
+sudo: false
 
-os:
-    - osx
-    - linux
-
-branches:
-    only:
-        - master
-
-addons:
-    apt:
-        sources:
-            - ubuntu-toolchain-r-test
-        packages:
-            - gcc-4.8
-            - g++-4.8
-            - lcov
-            - cmake
+matrix:
+    include:
+        - os: linux
+          compiler: clang
+          env: INSTALL_CXX=clang++-3.5
+          addons:
+              apt:
+                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5']
+                  packages: ['clang-3.5']
+        - os: linux
+          compiler: clang
+          env: INSTALL_CXX=clang++-3.6
+          #env: INSTALL_CXX=clang++-3.6 COVERAGE=llvm-cov-3.6
+          addons:
+              apt:
+                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
+                  packages: ['clang-3.6']
+        - os: linux
+          compiler: gcc
+          env: INSTALL_CXX=g++-4.8
+          addons:
+              apt:
+                  sources: ['ubuntu-toolchain-r-test']
+                  packages: ['g++-4.8']
+        - os: linux
+          compiler: gcc
+          env: INSTALL_CXX=g++-4.9 COVERAGE=gcov-4.9
+          addons:
+              apt:
+                  sources: ['ubuntu-toolchain-r-test']
+                  packages: ['g++-4.9']
+        - os: osx
+          compiler: clang
 
 before_script:
-    - export CC=/usr/bin/gcc-4.8
-    - export CXX=/usr/bin/g++-4.8
-    - gem install coveralls-lcov
-    - cd ${TRAVIS_BUILD_DIR}
-    - lcov --directory . --zerocounters
+    - if [-n "${INSTALL_CXX}" ]; then CXX=${INSTALL_CXX}; fi
 
 script:
     - cd ${TRAVIS_BUILD_DIR}
     - cmake . -DBUILD_COVERAGE:BOOL=ON
-    - make
-    - ctest
-
-after_success:
-    - cd ${TRAVIS_BUILD_DIR}
-    # capture coverage info
-    - lcov --directory . --capture --output-file coverage.info
-    # filter out system and test code
-    - lcov --remove coverage.info 'test/*' '/usr/*' --output-file coverage.info
-    # debug before upload
-    - lcov --list coverage.info
-    # uploads to coveralls
-    - coveralls-lcov coverage.info
+    - if [ -n "${COVERAGE}" ]; then
+        make clean && CXXFLAGS="--coverage" LDFLAGS="--coverage" make && make test;
+        ${COVERAGE} -lp test/CMakeFiles/*/*.o;
+        pip install --user cpp-coveralls;
+        ~/.local/bin/coveralls  --no-gcov -i ../include/meshio;
+      fi
