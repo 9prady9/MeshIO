@@ -50,9 +50,7 @@ before_script:
 script:
     - cd ${TRAVIS_BUILD_DIR}
     - cmake . -DBUILD_COVERAGE:BOOL=ON
-    - if [ -n "${COVERAGE}" ]; then
-        make clean && CXXFLAGS="--coverage" LDFLAGS="--coverage" make && make test;
-        ${COVERAGE} -lp test/CMakeFiles/*/*.o;
-        pip install --user cpp-coveralls;
-        ~/.local/bin/coveralls  --no-gcov -i ../include/meshio;
-      fi
+    - make clean && CXXFLAGS="--coverage" LDFLAGS="--coverage" make && make test;
+    - ${COVERAGE} -lp test/CMakeFiles/*/*.o;
+    - pip install --user cpp-coveralls;
+    - ~/.local/bin/coveralls  --no-gcov -i ../include/meshio;
