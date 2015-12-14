@@ -18,39 +18,47 @@ matrix:
           addons:
               apt:
                   sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5']
-                  packages: ['clang-3.5']
+                  packages: ['clang-3.5', 'lcov']
         - os: linux
           compiler: clang
           env: INSTALL_CXX=clang++-3.6
-          #env: INSTALL_CXX=clang++-3.6 COVERAGE=llvm-cov-3.6
           addons:
               apt:
                   sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
-                  packages: ['clang-3.6']
+                  packages: ['clang-3.6', 'lcov']
         - os: linux
           compiler: gcc
           env: INSTALL_CXX=g++-4.8
           addons:
               apt:
                   sources: ['ubuntu-toolchain-r-test']
-                  packages: ['g++-4.8']
+                  packages: ['g++-4.8', 'lcov']
         - os: linux
           compiler: gcc
-          env: INSTALL_CXX=g++-4.9 COVERAGE=gcov-4.9
+          env: INSTALL_CXX=g++-4.9
           addons:
               apt:
                   sources: ['ubuntu-toolchain-r-test']
-                  packages: ['g++-4.9']
+                  packages: ['g++-4.9', 'lcov']
         - os: osx
           compiler: clang
 
-before_script:
+before_install:
+    - gem install coveralls-lcov
     - if [-n "${INSTALL_CXX}" ]; then CXX=${INSTALL_CXX}; fi
 
 script:
-    - cd ${TRAVIS_BUILD_DIR}
-    - cmake . -DBUILD_COVERAGE:BOOL=ON
-    - make clean && CXXFLAGS="--coverage" LDFLAGS="--coverage" make && make test;
-    - ${COVERAGE} -lp test/CMakeFiles/*/*.o;
-    - pip install --user cpp-coveralls;
-    - ~/.local/bin/coveralls  --no-gcov -i ../include/meshio;
+    - mkdir -p build
+    - cd build
+    - cmake ../ -DBUILD_COVERAGE:BOOL=ON
+    - make -j4
+    - ctest --output-on-failure
+
+after_success:
+    - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+        ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null;
+        brew install lcov;
+      fi
+    - lcov --directory test --base-directory ../include/meshio/ --capture --output-file coverage.info
+    - lcov --remove coverage.info '/usr*' -o coverage.info
+    - coveralls-lcov coverage.info
