@@ -27,30 +27,30 @@ matrix:
                   sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
                   packages: ['clang-3.6', 'lcov']
         - os: linux
-          compiler: gcc
-          env: INSTALL_CXX=g++-4.8
+          compiler: gcc-4.8
+          env: INSTALL_CXX=g++-4.8 INSTALL_CC=gcc-4.8
           addons:
               apt:
                   sources: ['ubuntu-toolchain-r-test']
                   packages: ['g++-4.8', 'lcov']
         - os: linux
-          compiler: gcc
-          env: INSTALL_CXX=g++-4.9
+          compiler: gcc-4.9
+          env: INSTALL_CXX=g++-4.9 INSTALL_CC=gcc-4.9
           addons:
               apt:
                   sources: ['ubuntu-toolchain-r-test']
                   packages: ['g++-4.9', 'lcov']
         - os: osx
           compiler: clang
+          env: INSTALL_CXX=clang++ INSTALL_CC=clang
 
 before_install:
     - gem install coveralls-lcov
-    - if [-n "${INSTALL_CXX}" ]; then CXX=${INSTALL_CXX}; fi
 
 script:
     - mkdir -p build
     - cd build
-    - cmake ../ -DBUILD_COVERAGE:BOOL=ON
+    - CC=$INSTALL_CC CXX=$INSTALL_CXX cmake ../ -DBUILD_COVERAGE:BOOL=ON
     - make -j4
     - ctest --output-on-failure
 
