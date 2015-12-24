@@ -98,11 +98,11 @@ bool write(const char* pFileName, const OBJData<T> &pObjects)
         for (auto face_indices = obj_shape->mTriVertexIndices.begin();
              face_indices != obj_shape->mTriVertexIndices.end();
              ++face_indices) {
-            for (auto face_index = face_indices->Begin();
-                 face_index != face_indices->End(); ++face_index) {
-                ofs << "v " << obj_shape->mPositions[*face_index].X()
-                    << " " << obj_shape->mPositions[*face_index].Y()
-                    << " " << obj_shape->mPositions[*face_index].Z()
+            for (auto face_index = face_indices->begin();
+                 face_index != face_indices->end(); ++face_index) {
+                ofs << "v " << obj_shape->mPositions[*face_index].getX()
+                    << " " << obj_shape->mPositions[*face_index].getY()
+                    << " " << obj_shape->mPositions[*face_index].getZ()
                     << std::endl;
             }
         }
@@ -113,11 +113,11 @@ bool write(const char* pFileName, const OBJData<T> &pObjects)
             for (auto face_indices = obj_shape->mTriVertexIndices.begin();
                  face_indices != obj_shape->mTriVertexIndices.end();
                  ++face_indices) {
-                for (auto face_index = face_indices->Begin();
-                     face_index != face_indices->End(); ++face_index) {
-                    ofs << "vn " << obj_shape->mNormals[*face_index].X()
-                        << " " << obj_shape->mNormals[*face_index].Y()
-                        << " " << obj_shape->mNormals[*face_index].Z()
+                for (auto face_index = face_indices->begin();
+                     face_index != face_indices->end(); ++face_index) {
+                    ofs << "vn " << obj_shape->mNormals[*face_index].getX()
+                        << " " << obj_shape->mNormals[*face_index].getY()
+                        << " " << obj_shape->mNormals[*face_index].getZ()
                         << std::endl;
                 }
             }
@@ -129,11 +129,11 @@ bool write(const char* pFileName, const OBJData<T> &pObjects)
             for (auto face_indices = obj_shape->mTriVertexIndices.begin();
                  face_indices != obj_shape->mTriVertexIndices.end();
                  ++face_indices) {
-                for (auto face_index = face_indices->Begin();
-                     face_index != face_indices->End(); ++face_index) {
+                for (auto face_index = face_indices->begin();
+                     face_index != face_indices->end(); ++face_index) {
                     ofs << "vt "
-                        << obj_shape->mTexturePositions[*face_index].X()
-                        << " " << obj_shape->mTexturePositions[*face_index].Y()
+                        << obj_shape->mTexturePositions[*face_index].getX()
+                        << " " << obj_shape->mTexturePositions[*face_index].getY()
                         << std::endl;
                 }
             }
@@ -225,9 +225,9 @@ bool read(OBJData<T> &pObjects, const char* pFileName,
         for (unsigned idx = 0; idx < shapes[object].mesh.indices.size() / 3;
              ++idx) {
             Vec3<unsigned> indices;
-            indices.SetX(shapes[object].mesh.indices[3 * idx + 0]);
-            indices.SetY(shapes[object].mesh.indices[3 * idx + 1]);
-            indices.SetZ(shapes[object].mesh.indices[3 * idx + 2]);
+            indices.setX(shapes[object].mesh.indices[3 * idx + 0]);
+            indices.setY(shapes[object].mesh.indices[3 * idx + 1]);
+            indices.setZ(shapes[object].mesh.indices[3 * idx + 2]);
             pObjects.mOBJAttributes[object].mTriVertexIndices.push_back(
                     indices);
             pObjects.mOBJAttributes[object].mMaterialIDs.push_back(
@@ -238,8 +238,8 @@ bool read(OBJData<T> &pObjects, const char* pFileName,
         for (unsigned idx = 0; idx < shapes[object].mesh.texcoords.size() / 2;
              ++idx) {
             Vec3<T> texture_position;
-            texture_position.SetX(shapes[object].mesh.texcoords[2 * idx + 0]);
-            texture_position.SetY(shapes[object].mesh.texcoords[2 * idx + 1]);
+            texture_position.setX(shapes[object].mesh.texcoords[2 * idx + 0]);
+            texture_position.setY(shapes[object].mesh.texcoords[2 * idx + 1]);
             pObjects.mOBJAttributes[object].mTexturePositions.push_back(
                     texture_position);
         }
@@ -252,16 +252,16 @@ bool read(OBJData<T> &pObjects, const char* pFileName,
         for (unsigned idx = 0; idx < shapes[object].mesh.positions.size() / 3;
              ++idx) {
             Vec4<T> position;
-            position.SetX(shapes[object].mesh.positions[3 * idx + 0]);
-            position.SetY(shapes[object].mesh.positions[3 * idx + 1]);
-            position.SetZ(shapes[object].mesh.positions[3 * idx + 2]);
+            position.setX(shapes[object].mesh.positions[3 * idx + 0]);
+            position.setY(shapes[object].mesh.positions[3 * idx + 1]);
+            position.setZ(shapes[object].mesh.positions[3 * idx + 2]);
             pObjects.mOBJAttributes[object].mPositions.push_back(position);
 
             if (get_normals) {
                 Vec3<T> normal;
-                normal.SetX(shapes[object].mesh.normals[3 * idx + 0]);
-                normal.SetY(shapes[object].mesh.normals[3 * idx + 1]);
-                normal.SetZ(shapes[object].mesh.normals[3 * idx + 2]);
+                normal.setX(shapes[object].mesh.normals[3 * idx + 0]);
+                normal.setY(shapes[object].mesh.normals[3 * idx + 1]);
+                normal.setZ(shapes[object].mesh.normals[3 * idx + 2]);
                 pObjects.mOBJAttributes[object].mNormals.push_back(normal);
             }
         }
