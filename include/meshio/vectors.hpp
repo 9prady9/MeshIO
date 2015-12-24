@@ -27,6 +27,8 @@ class Vec4 {
     ~Vec4() {}
 
     virtual std::size_t size() const { return 4; }
+    virtual viterator end() { return elems.end(); }
+    virtual const_viterator end() const { return elems.end(); }
 
     inline void setX(T value) { elems[0] = value; }
     inline void setY(T value) { elems[1] = value; }
@@ -40,8 +42,6 @@ class Vec4 {
 
     viterator begin() { return elems.begin(); }
     const_viterator begin() const { return elems.begin(); }
-    viterator end() { return elems.end(); }
-    const_viterator end() const { return elems.end(); }
 
   private:
     std::vector<T> elems;
@@ -50,21 +50,31 @@ class Vec4 {
 template<class T>
 class Vec3 : public Vec4<T> {
   public:
+    typedef typename std::vector<T>::iterator viterator;
+    typedef typename std::vector<T>::const_iterator const_viterator;
+
     Vec3(T pX, T pY, T pZ) : Vec4<T>(pX, pY, pZ, 0) {}
     Vec3() : Vec4<T>(0, 0, 0, 0) {}
     ~Vec3() {}
 
     std::size_t size() const { return 3; }
+    viterator end() { return Vec4<T>::end()--; }
+    const_viterator end() const { return Vec4<T>::end()--; }
 };
 
 template<class T>
 class Vec2 : public Vec4<T> {
   public:
+    typedef typename std::vector<T>::iterator viterator;
+    typedef typename std::vector<T>::const_iterator const_viterator;
+
     Vec2(T pX, T pY, T pZ) : Vec4<T>(pX, pY, 0, 0) {}
     Vec2() : Vec4<T>(0, 0, 0, 0) {}
     ~Vec2() {}
 
     std::size_t size() const { return 2; }
+    viterator end() { return Vec4<T>::end()-2; }
+    const_viterator end() const { return Vec4<T>::end()-2; }
 };
 
 
