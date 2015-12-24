@@ -105,18 +105,18 @@ class OBJData {
                 << objAttribute.mPositions.size() << std::endl;
             for (unsigned j = 0; j < objAttribute.mPositions.size();
                  ++j) {
-                std::cout << "v " << objAttribute.mPositions[j].X() << " "
-                    << objAttribute.mPositions[j].Y() << " "
-                    << objAttribute.mPositions[j].Z() << std::endl;
+                std::cout << "v " << objAttribute.mPositions[j].getX() << " "
+                    << objAttribute.mPositions[j].getY() << " "
+                    << objAttribute.mPositions[j].getZ() << std::endl;
             }
 
             std::cout << "Number of indices = "
                 << objAttribute.mTriVertexIndices.size() << std::endl;
             for (unsigned j = 0; j < objAttribute.mTriVertexIndices.size();
                  ++j) {
-                std::cout << "f " << objAttribute.mTriVertexIndices[j].X()
-                    << " " << objAttribute.mTriVertexIndices[j].Y()
-                    << " " << objAttribute.mTriVertexIndices[j].Z()
+                std::cout << "f " << objAttribute.mTriVertexIndices[j].getX()
+                    << " " << objAttribute.mTriVertexIndices[j].getY()
+                    << " " << objAttribute.mTriVertexIndices[j].getZ()
                     << std::endl;
             }
         }

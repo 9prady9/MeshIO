@@ -11,6 +11,7 @@
 #define MESHIO_MESHIO_DEFINES_HPP_
 
 #include "vectors.hpp"
+#include <vector>
 
 namespace meshio
 {
