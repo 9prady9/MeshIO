@@ -29,3 +29,7 @@
 
 # CMake files
 build/
+
+# output files written by tests
+resources/cube_ascii2binary.stl
+resources/cube_binary2ascii.stl
