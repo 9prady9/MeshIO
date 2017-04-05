@@ -14,6 +14,11 @@
 using namespace std;
 using namespace meshio;
 
+TEST(STL, INVALID_FILE)
+{
+    vector< STLData<float> > objs;
+    EXPECT_FALSE(stl::read<float>(objs, "/home/nonexistant/cube.stl"));
+}
 
 TEST(STL, READ_BINARY)
 {
@@ -44,6 +49,26 @@ TEST(STL, READ_ASCII)
 
     referenceObjs.clear();
     objs.clear();
+}
+
+TEST(STL, WRITE_INVALID_FORMAT)
+{
+    vector< STLData<float> > objs;
+    EXPECT_FALSE(stl::write("/home/nonexistant/wrongformat.stl", static_cast<meshio::STLFormat>(2), objs));
+}
+
+
+TEST(STL, WRITE_TO_INVALID_BINARY_FILE)
+{
+    vector< STLData<float> > objs;
+    EXPECT_FALSE(stl::write("/home/nonexistatnt/binary.stl", meshio::STL_BINARY, objs));
+}
+
+
+TEST(STL, WRITE_TO_INVALID_ASCII_FILENAME)
+{
+    vector< STLData<float> > objs;
+    EXPECT_FALSE(stl::write("/home/nonexistatnt/ascii.stl", meshio::STL_ASCII, objs));
 }
 
 TEST(STL, WRITE_BINARY)
