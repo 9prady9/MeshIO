@@ -76,10 +76,9 @@ FOREACH(FILE ${FILES})
     ADD_TEST(Test_${TEST_NAME} ${TEST_NAME})
     FILE(GLOB TEST_FILE "${FNAME}.cpp" "${FNAME}.c")
     ADD_EXECUTABLE(${TEST_NAME} ${TEST_FILE})
-    TARGET_LINK_LIBRARIES(${TEST_NAME} ${THREAD_LIB_FLAG} ${GTEST_LIBRARIES})
     ## Following commented out changes work only on CMAKE version >=3.0
-    #TARGET_LINK_LIBRARIES(${TEST_NAME}  INTERFACE MeshIO
-    #                                    PRIVATE ${THREAD_LIB_FLAG}
-    #                                    PRIVATE ${GTEST_LIBRARIES})
+    TARGET_LINK_LIBRARIES(${TEST_NAME}  INTERFACE MeshIO
+                                        PRIVATE ${THREAD_LIB_FLAG}
+                                        PRIVATE ${GTEST_LIBRARIES})
     SET_TARGET_PROPERTIES(${TEST_NAME} PROPERTIES FOLDER "Tests")
 ENDFOREACH()
