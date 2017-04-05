@@ -3,7 +3,7 @@
 # Check if Google Test exists
 SET(GTEST_SOURCE_DIR "${CMAKE_SOURCE_DIR}/test/googletest")
 IF(NOT EXISTS "${GTEST_SOURCE_DIR}/README")
-    MESSAGE(WARNING "GTest Source is not available. Tests will not build.")
+    MESSAGE(WARNING "GTest Source is not available. Tests will not built.")
     MESSAGE("Did you miss the --recursive option when cloning?")
     MESSAGE("Run the following commands to correct this:")
     MESSAGE("git submodule init")

@@ -1,5 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.7)
 
+### Below code was used to verify GNU compiler
+### version on travis-ci servers
 if (CMAKE_COMPILER_IS_GNUCC)
     execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
         OUTPUT_VARIABLE GCC_VERSION)
@@ -8,11 +10,12 @@ if (CMAKE_COMPILER_IS_GNUCC)
     list(GET GCC_VERSION_COMPONENTS 0 GCC_MAJOR)
     list(GET GCC_VERSION_COMPONENTS 1 GCC_MINOR)
 
-    message(STATUS ${GCC_MAJOR})
-    message(STATUS ${GCC_MINOR})
+    message(STATUS "Using GNUCC Compiler Verson ${GCC_MAJOR}.${GCC_MINOR}")
 endif()
 
-
+###############################################################################
+### Pulled the section enclosed by hashed lines from the following project.
+### https://github.com/arrayfire/arrayfire/blob/devel/test/CMakeLists.txt
 FIND_PACKAGE(Threads REQUIRED)
 IF(CMAKE_USE_PTHREADS_INIT AND NOT "${APPLE}")
     SET(THREAD_LIB_FLAG "-pthread")
@@ -51,6 +54,7 @@ ELSE(EXISTS "${TESTDATA_SOURCE_DIR}" AND IS_DIRECTORY "${TESTDATA_SOURCE_DIR}"
     MESSAGE("Clone the repository properly and make sure there is a folder known as resources under it")
 ENDIF()
 ENDIF(NOT ${USE_RELATIVE_TEST_DIR})
+###############################################################################
 
 IF(BUILD_COVERAGE)
     # debug, no optimisation
