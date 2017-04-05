@@ -1,5 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.7)
 
+### Below code was used to verify GNU compiler
+### version on travis-ci servers
 if (CMAKE_COMPILER_IS_GNUCC)
     execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
         OUTPUT_VARIABLE GCC_VERSION)
@@ -8,11 +10,12 @@ if (CMAKE_COMPILER_IS_GNUCC)
     list(GET GCC_VERSION_COMPONENTS 0 GCC_MAJOR)
     list(GET GCC_VERSION_COMPONENTS 1 GCC_MINOR)
 
-    message(STATUS ${GCC_MAJOR})
-    message(STATUS ${GCC_MINOR})
+    message(STATUS "Using GNUCC Compiler Verson ${GCC_MAJOR}.${GCC_MINOR}")
 endif()
 
-
+###############################################################################
+### Pulled the section enclosed by hashed lines from the following project.
+### https://github.com/arrayfire/arrayfire/blob/devel/test/CMakeLists.txt
 FIND_PACKAGE(Threads REQUIRED)
 IF(CMAKE_USE_PTHREADS_INIT AND NOT "${APPLE}")
     SET(THREAD_LIB_FLAG "-pthread")
@@ -51,11 +54,12 @@ ELSE(EXISTS "${TESTDATA_SOURCE_DIR}" AND IS_DIRECTORY "${TESTDATA_SOURCE_DIR}"
     MESSAGE("Clone the repository properly and make sure there is a folder known as resources under it")
 ENDIF()
 ENDIF(NOT ${USE_RELATIVE_TEST_DIR})
+###############################################################################
 
 IF(BUILD_COVERAGE)
     # debug, no optimisation
     # enabling coverage
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage -fprofile-arcs -ftest-coverage")
 ENDIF()
 
 INCLUDE_DIRECTORIES(
@@ -72,10 +76,9 @@ FOREACH(FILE ${FILES})
     ADD_TEST(Test_${TEST_NAME} ${TEST_NAME})
     FILE(GLOB TEST_FILE "${FNAME}.cpp" "${FNAME}.c")
     ADD_EXECUTABLE(${TEST_NAME} ${TEST_FILE})
-    TARGET_LINK_LIBRARIES(${TEST_NAME} ${THREAD_LIB_FLAG} ${GTEST_LIBRARIES})
     ## Following commented out changes work only on CMAKE version >=3.0
-    #TARGET_LINK_LIBRARIES(${TEST_NAME}  INTERFACE MeshIO
-    #                                    PRIVATE ${THREAD_LIB_FLAG}
-    #                                    PRIVATE ${GTEST_LIBRARIES})
+    TARGET_LINK_LIBRARIES(${TEST_NAME}  INTERFACE MeshIO
+                                        PRIVATE ${THREAD_LIB_FLAG}
+                                        PRIVATE ${GTEST_LIBRARIES})
     SET_TARGET_PROPERTIES(${TEST_NAME} PROPERTIES FOLDER "Tests")
 ENDFOREACH()

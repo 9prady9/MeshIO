@@ -3,7 +3,7 @@
 # Check if Google Test exists
 SET(GTEST_SOURCE_DIR "${CMAKE_SOURCE_DIR}/test/googletest")
 IF(NOT EXISTS "${GTEST_SOURCE_DIR}/README")
-    MESSAGE(WARNING "GTest Source is not available. Tests will not build.")
+    MESSAGE(WARNING "GTest Source is not available. Tests will not built.")
     MESSAGE("Did you miss the --recursive option when cloning?")
     MESSAGE("Run the following commands to correct this:")
     MESSAGE("git submodule init")
@@ -75,8 +75,7 @@ ENDFUNCTION(GTEST_BUILD)
 
 GTEST_BUILD(googletest              ${CMAKE_BUILD_TYPE} ${binary_dir} "${byproducts}")
 
-# If we are on OSX and using the clang compiler go ahead and build
-# GTest using libstdc++ just in case we compile the CUDA backend
+# If we are on OSX and using the clang compiler go ahead and build GTest using libstdc++
 IF("${APPLE}" AND ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
     GTEST_BUILD(googletest_libstdcpp    LibStdCpp           ${stdlib_binary_dir} "${byproducts_libstdcpp}")
 ENDIF("${APPLE}" AND ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
