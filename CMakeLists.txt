@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.7)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0.2)
 
 PROJECT(MeshIO)
 
@@ -42,16 +42,16 @@ IF(BUILD_TESTS)
 ENDIF()
 
 ### Following commented out changes work only on CMAKE version >=3.0
-#ADD_LIBRARY(MeshIO INTERFACE)
-#TARGET_INCLUDE_DIRECTORIES(MeshIO INTERFACE
-#           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-#           $<INSTALL_INTERFACE:include/meshio>
-#           )
+ADD_LIBRARY(MeshIO INTERFACE)
+TARGET_INCLUDE_DIRECTORIES(MeshIO INTERFACE
+           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+           $<INSTALL_INTERFACE:include/meshio>
+           )
 
-#INSTALL(TARGETS MeshIO EXPORT meshioExport)
-#INSTALL(EXPORT meshioExport NAMESPACE Upstream::
-#       DESTINATION lib/cmake/MeshIO
-#       )
+INSTALL(TARGETS MeshIO EXPORT meshioExport)
+INSTALL(EXPORT meshioExport NAMESPACE Upstream::
+       DESTINATION share/MeshIO/cmake
+       )
 
 INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include"
         DESTINATION .
