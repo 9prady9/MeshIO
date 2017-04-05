@@ -59,6 +59,6 @@ after_success:
         ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null;
         brew install lcov;
       fi
-    - lcov --directory test --base-directory ../include/meshio/ --capture --output-file coverage.info
+    - lcov --directory test --base-directory ../include/meshio/ --capture --no-external --output-file coverage.info
     - lcov --remove coverage.info '/usr*' -o coverage.info
     - coveralls-lcov coverage.info
