@@ -59,7 +59,7 @@ ENDIF(NOT ${USE_RELATIVE_TEST_DIR})
 IF(BUILD_COVERAGE)
     # debug, no optimisation
     # enabling coverage
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage -fprofile-arcs -ftest-coverage")
 ENDIF()
 
 INCLUDE_DIRECTORIES(
