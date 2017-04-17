@@ -92,7 +92,7 @@ TEST(STL, WRITE_ASCII)
 TEST(STL, CROSS_CHECK)
 {
     vector< STLData<float> > binReadObjs;
-    stl::read<float>(binReadObjs, TEST_DIR "/cube_binary.stl");
+    stl::read<float>(binReadObjs, TEST_DIR "/cube_ascii2binary.stl");
 
     vector< STLData<float> > asciiReadObjs;
     stl::read<float>(asciiReadObjs, TEST_DIR "/cube_ascii.stl");

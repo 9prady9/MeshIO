@@ -7,15 +7,15 @@
  * file.
  */
 
-#ifndef __STL_HPP__
-#define __STL_HPP__
+#ifndef MESHIO_STL_HPP_
+#define MESHIO_STL_HPP_
 
-#include <vector>
+#include "meshio_defines.hpp"
+
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <cstdint>
-#include "meshio_defines.hpp"
 
 namespace meshio
 {
@@ -34,4 +34,4 @@ bool write(const char* pFileName, const STLFormat pFormat,
 }
 }
 
-#endif // __STL_HPP__
+#endif // MESHIO_STL_HPP_
