@@ -8,3 +8,10 @@ Currently supported formats
 * STL
 
 We plan to add support for Wavefront OBJ format next.
+
+License
+-------
+
+BSD 2-Clause License. Please check the accompanying [LICENSE].txt file
+
+[LICENSE]:https://github.com/9prady9/MeshIO/blob/master/LICENSE
