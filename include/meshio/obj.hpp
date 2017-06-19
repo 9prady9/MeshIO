@@ -12,9 +12,9 @@
 
 #define TINYOBJLOADER_IMPLEMENTATION
 
-#include "../utilities.hpp"
-#include "../meshio_defines.hpp"
-#include "../../third_party/tiny_obj_loader.h"
+#include "./utilities.hpp"
+#include "./meshio_defines.hpp"
+#include "../third_party/tiny_obj_loader.h"
 
 #include <iostream>
 #include <fstream>
@@ -55,10 +55,11 @@ class OBJAttribute : public GeometryData<T> {
     }
 
     bool operator==(const OBJAttribute<T>& pOBJAttribute) const {
-        if (dynamic_cast<GeometryData<T>&>(
+        /*if (dynamic_cast<GeometryData<T>&>(
                         const_cast<OBJAttribute<T>&>(*this)) ==
                 dynamic_cast<GeometryData<T>&>(
-                        const_cast<OBJAttribute<T>&>(pOBJAttribute))) {
+                        const_cast<OBJAttribute<T>&>(pOBJAttribute))) {*/
+        if (true) { // TODO: Make baseclass comparison
 
             if (!mOBJName.compare(pOBJAttribute.mOBJName)) {
                 // Checking equality for mMaterialIDs.
@@ -97,7 +98,7 @@ class OBJData {
         clear();
     }
 
-    // TODO Delete this function
+    // TODO: Check whether this can be made virtual by making OBJData derived
     void print() {
         for (unsigned i = 0; i < mOBJAttributes.size(); ++i) {
             OBJAttribute<T> &objAttribute = mOBJAttributes[i];
@@ -121,7 +122,6 @@ class OBJData {
             }
         }
     }
-    // End delete
 
     void clear() {
         for (unsigned i = 0; i < mOBJAttributes.size(); ++i)
