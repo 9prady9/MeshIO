@@ -8,7 +8,7 @@
  */
 
 #include "testHelpers.hpp"
-#include <meshio/obj/obj.hpp>
+#include <meshio/obj.hpp>
 
 #include <gtest/gtest.h>
 
@@ -22,14 +22,7 @@ TEST(OBJ, READ_OBJ)
     initializeReferenceOBJObject(refOBJData);
 
     obj::OBJData<float> objData;
-    obj::read<float>(objData, TEST_DIR "/obj/cube_tri.obj", nullptr);
-
-    obj::write<float>(TEST_DIR "/obj/cube_tri_write.obj", objData);
-
-    std::cout << "printing ref data" << std::endl;
-    refOBJData.print();
-    std::cout << "printing read data" << std::endl;
-    objData.print();
+    obj::read<float>(objData, TEST_DIR "/cube_tri.obj", nullptr);
 
     EXPECT_TRUE(objData == refOBJData);
 
@@ -37,13 +30,20 @@ TEST(OBJ, READ_OBJ)
     objData.clear();
 }
 
-/*
 TEST(OBJ, WRITE_OBJ)
 {
-    vector< STLData<float> > objs;
-    stl::read<float>(objs, TEST_DIR "/cube_binary.stl");
-    stl::write(TEST_DIR "/cube_binary2ascii.stl", meshio::STL_ASCII, objs);
+    // Reference OBJData object
+    obj::OBJData<float> refOBJData;
+    initializeReferenceOBJObject(refOBJData);
+    obj::write<float>(TEST_DIR "/cube_tri_write_ref.obj", refOBJData);
 
-    objs.clear();
+    obj::OBJData<float> objData;
+    obj::read<float>(objData, TEST_DIR "/cube_tri.obj", nullptr);
+    obj::write<float>(TEST_DIR "/cube_tri_write.obj", objData);
+
+    // TODO: File comparison
+    EXPECT_TRUE(true); // place holder
+
+    refOBJData.clear();
+    objData.clear();
 }
-*/

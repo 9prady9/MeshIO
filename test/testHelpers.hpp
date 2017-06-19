@@ -1,6 +1,6 @@
 
 #include <meshio/meshio_defines.hpp>
-#include <meshio/obj/obj.hpp>
+#include <meshio/obj.hpp>
 
 #include <vector>
 
@@ -76,45 +76,57 @@ void initializeReferenceOBJObject(meshio::obj::OBJData<T> &refObjects)
 
     position = meshio::Vec4<T>(0,0,0,1);
     objAttribute.mPositions.push_back(position);
-    position = meshio::Vec4<T>(1,0,0,1);
-    objAttribute.mPositions.push_back(position);
     position = meshio::Vec4<T>(1,1,0,1);
     objAttribute.mPositions.push_back(position);
-    position = meshio::Vec4<T>(0,1,0,1);
+    position = meshio::Vec4<T>(1,0,0,1);
     objAttribute.mPositions.push_back(position);
-    position = meshio::Vec4<T>(0,0,1,1);
+    position = meshio::Vec4<T>(0,1,0,1);
     objAttribute.mPositions.push_back(position);
     position = meshio::Vec4<T>(1,0,1,1);
     objAttribute.mPositions.push_back(position);
     position = meshio::Vec4<T>(1,1,1,1);
     objAttribute.mPositions.push_back(position);
+    position = meshio::Vec4<T>(0,0,1,1);
+    objAttribute.mPositions.push_back(position);
     position = meshio::Vec4<T>(0,1,1,1);
     objAttribute.mPositions.push_back(position);
 
-    indices = meshio::Vec3<unsigned>(1,3,2);
+    indices = meshio::Vec3<unsigned>(0,1,2);
     objAttribute.mTriVertexIndices.push_back(indices);
-    indices = meshio::Vec3<unsigned>(1,4,3);
+    objAttribute.mMaterialIDs.push_back(-1);
+    indices = meshio::Vec3<unsigned>(0,3,1);
     objAttribute.mTriVertexIndices.push_back(indices);
-    indices = meshio::Vec3<unsigned>(2,3,6);
+    objAttribute.mMaterialIDs.push_back(-1);
+    indices = meshio::Vec3<unsigned>(2,1,4);
     objAttribute.mTriVertexIndices.push_back(indices);
-    indices = meshio::Vec3<unsigned>(3,7,6);
+    objAttribute.mMaterialIDs.push_back(-1);
+    indices = meshio::Vec3<unsigned>(1,5,4);
     objAttribute.mTriVertexIndices.push_back(indices);
-    indices = meshio::Vec3<unsigned>(6,7,5);
+    objAttribute.mMaterialIDs.push_back(-1);
+    indices = meshio::Vec3<unsigned>(4,5,6);
     objAttribute.mTriVertexIndices.push_back(indices);
-    indices = meshio::Vec3<unsigned>(5,7,8);
+    objAttribute.mMaterialIDs.push_back(-1);
+    indices = meshio::Vec3<unsigned>(6,5,7);
     objAttribute.mTriVertexIndices.push_back(indices);
-    indices = meshio::Vec3<unsigned>(5,8,4);
+    objAttribute.mMaterialIDs.push_back(-1);
+    indices = meshio::Vec3<unsigned>(6,7,3);
     objAttribute.mTriVertexIndices.push_back(indices);
-    indices = meshio::Vec3<unsigned>(5,4,1);
+    objAttribute.mMaterialIDs.push_back(-1);
+    indices = meshio::Vec3<unsigned>(6,3,0);
     objAttribute.mTriVertexIndices.push_back(indices);
-    indices = meshio::Vec3<unsigned>(1,6,5);
+    objAttribute.mMaterialIDs.push_back(-1);
+    indices = meshio::Vec3<unsigned>(0,4,6);
     objAttribute.mTriVertexIndices.push_back(indices);
-    indices = meshio::Vec3<unsigned>(1,2,6);
+    objAttribute.mMaterialIDs.push_back(-1);
+    indices = meshio::Vec3<unsigned>(0,2,4);
     objAttribute.mTriVertexIndices.push_back(indices);
-    indices = meshio::Vec3<unsigned>(4,8,7);
+    objAttribute.mMaterialIDs.push_back(-1);
+    indices = meshio::Vec3<unsigned>(3,7,5);
     objAttribute.mTriVertexIndices.push_back(indices);
-    indices = meshio::Vec3<unsigned>(4,7,3);
+    objAttribute.mMaterialIDs.push_back(-1);
+    indices = meshio::Vec3<unsigned>(3,5,1);
     objAttribute.mTriVertexIndices.push_back(indices);
+    objAttribute.mMaterialIDs.push_back(-1);
 
     refObjects.mOBJAttributes.push_back(objAttribute);
 }
