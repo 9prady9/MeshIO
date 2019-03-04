@@ -38,7 +38,7 @@ PROJECT_NAME           = "MeshIO"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = ""
+PROJECT_NUMBER         = "${PROJECT_VERSION}"
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -51,7 +51,6 @@ PROJECT_BRIEF          = ""
 # and the maximum width should not exceed 200 pixels. Doxygen will copy the logo
 # to the output directory.
 
-#PROJECT_LOGO           = ${ASSETS_DIR}/arrayfire_logo.png
 PROJECT_LOGO           =
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path

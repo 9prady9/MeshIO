@@ -1,67 +1,81 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.12.3)
 
-PROJECT(MeshIO)
+project(MeshIO VERSION 0.1.0)
 
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-OPTION(BUILD_DOCUMENTATION "Build Documentation" OFF)
-OPTION(BUILD_EXAMPLES "Build examples" OFF)
-OPTION(BUILD_TESTS "Build Tests" ON)
-OPTION(BUILD_COVERAGE "Create test coverage report" OFF)
-OPTION(USE_SYSTEM_GTEST "Use GTEST from system libraries" OFF)
-OPTION(USE_RELATIVE_TEST_DIR "Use relative paths for the test data directory(For continious integration(CI) purposes only)" OFF)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# Set a default build type if none was specified
-IF(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-    SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
-    # Set the possible values of build type for cmake-gui
-    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
-      "MinSizeRel" "RelWithDebInfo")
-ENDIF()
+if (NOT EXISTS "${MeshIO_SOURCE_DIR}/test/googletest")
+  message(WARNING "google/googletest is not available. Tests will not built.")
+  message("Did you miss the --recursive option when cloning?")
+  message("Run the following commands to correct this:")
+  message("git submodule init")
+  message("git submodule update")
+  message("git submodule foreach git pull origin master")
+endif ()
 
-### Marking BUILD_COVERAGE as advanced as it won't be
-### used by regular developers
-MARK_AS_ADVANCED(BUILD_COVERAGE)
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+  set_property(CACHE CMAKE_BUILD_TYPE
+      PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
 
-IF(UNIX)
-    IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-    ELSEIF("${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS 4.7)
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-    ELSE()
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-    ENDIF()
-ENDIF()
+option(MeshIO_BUILD_DOCS "Build Documentation" OFF)
+option(MeshIO_BUILD_EXAMPLES "Build examples" OFF)
+option(MeshIO_BUILD_COVERAGE "Create test coverage report" OFF)
 
-# Generate documentation
-IF(BUILD_DOCUMENTATION)
-    ADD_SUBDIRECTORY(docs)
-ENDIF(BUILD_DOCUMENTATION)
+add_library(meshio INTERFACE)
 
-IF(BUILD_EXAMPLES)
-    ADD_SUBDIRECTORY(examples)
-ENDIF()
+target_include_directories(meshio INTERFACE
+  $<BUILD_INTERFACE:${MeshIO_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+  )
 
-IF(BUILD_TESTS)
-    ENABLE_TESTING()
-    ADD_SUBDIRECTORY(test)
-ENDIF()
+include(CTest)
+enable_testing()
+add_subdirectory(test)
 
-### Following commented out changes work only on CMAKE version >=3.0
-ADD_LIBRARY(MeshIO INTERFACE)
-TARGET_INCLUDE_DIRECTORIES(MeshIO INTERFACE
-           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-           $<INSTALL_INTERFACE:include/meshio>
-           )
+if(MeshIO_BUILD_DOCS)
+  add_subdirectory(docs)
+endif(MeshIO_BUILD_DOCS)
 
-INSTALL(TARGETS MeshIO EXPORT meshioExport)
-INSTALL(EXPORT meshioExport NAMESPACE Upstream::
-       DESTINATION share/MeshIO/cmake
-       )
+if (MeshIO_BUILD_EXAMPLES)
+  add_subdirectory(examples)
+endif ()
 
-INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include"
-        DESTINATION .
-        COMPONENT Headers
-        FILES_MATCHING
-        PATTERN "*.hpp"
-        )
+include(CMakePackageConfigHelpers)
+set(INCLUDE_DIRS include)
+set(CMAKE_DIR share/meshio/cmake)
+configure_package_config_file(
+    "${PROJECT_SOURCE_DIR}/cmake/MeshIOConfig.cmake.in"
+    "cmake_install/MeshIOConfig.cmake"
+    INSTALL_DESTINATION share/meshio/cmake
+    PATH_VARS INCLUDE_DIRS CMAKE_DIR
+)
+
+install(TARGETS meshio EXPORT MeshIOTargets COMPONENT meshio)
+
+install(EXPORT MeshIOTargets
+  NAMESPACE MeshIO::
+  DESTINATION share/meshio/cmake
+  COMPONENT meshio
+  )
+
+install(FILES
+  ${MeshIO_BINARY_DIR}/cmake_install/MeshIOConfig.cmake
+  DESTINATION share/meshio/cmake
+  COMPONENT cmake
+)
+
+install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include"
+  DESTINATION .
+  COMPONENT Headers
+  FILES_MATCHING
+  PATTERN "*.hpp"
+  PATTERN "*.inl"
+  )
+
+mark_as_advanced(MeshIO_BUILD_COVERAGE)
