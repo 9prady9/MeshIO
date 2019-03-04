@@ -1,39 +1,35 @@
-#-----------------------------------------------------------------------------
-#
-#  Configuration for continuous integration service at travis-ci.org
-#
-#-----------------------------------------------------------------------------
-#
-# This file is copy of https://github.com/mapbox/protozero/blob/master/.travis.yml
-
 language: cpp
+
+branches:
+  only:
+  - master
 
 sudo: false
 
 matrix:
     include:
-        - os: linux
+        - dist: xenial
           compiler: clang
           env: INSTALL_CXX=clang++-3.5
           addons:
               apt:
                   sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5', 'george-edison55-precise-backports']
                   packages: ['clang-3.5', 'lcov', 'cmake', 'cmake-data']
-        - os: linux
+        - dist: xenial
           compiler: clang
           env: INSTALL_CXX=clang++-3.6
           addons:
               apt:
                   sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6', 'george-edison55-precise-backports']
                   packages: ['clang-3.6', 'lcov', 'cmake', 'cmake-data']
-        - os: linux
+        - dist: xenial
           compiler: gcc-4.8
           env: INSTALL_CXX=g++-4.8 INSTALL_CC=gcc-4.8
           addons:
               apt:
                   sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']
                   packages: ['g++-4.8', 'lcov', 'cmake', 'cmake-data']
-        - os: linux
+        - dist: xenial
           compiler: gcc-4.9
           env: INSTALL_CXX=g++-4.9 INSTALL_CC=gcc-4.9
           addons:
@@ -41,6 +37,7 @@ matrix:
                   sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']
                   packages: ['g++-4.9', 'lcov', 'cmake', 'cmake-data']
         - os: osx
+          osx_image: xcode10.1
           compiler: clang
           env: INSTALL_CXX=clang++ INSTALL_CC=clang
 
@@ -50,7 +47,7 @@ before_install:
 script:
     - mkdir -p build
     - cd build
-    - CC=$INSTALL_CC CXX=$INSTALL_CXX cmake ../ -DBUILD_COVERAGE:BOOL=ON
+    - CC=$INSTALL_CC CXX=$INSTALL_CXX cmake ../ -DMeshIO_BUILD_COVERAGE:BOOL=ON
     - make -j4
     - ctest --output-on-failure
 
