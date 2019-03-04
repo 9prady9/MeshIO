@@ -34,6 +34,8 @@ target_include_directories(meshio INTERFACE
   $<INSTALL_INTERFACE:include>
   )
 
+include(CTest)
+enable_testing()
 add_subdirectory(test)
 
 if(MeshIO_BUILD_DOCS)

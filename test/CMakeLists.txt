@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.12.3)
-
 ### Below code was used to verify GNU compiler
 ### version on travis-ci servers
 if (CMAKE_COMPILER_IS_GNUCC)
@@ -45,6 +43,7 @@ foreach(FILE ${FILES})
   set(TEST_NAME ${FNAME})
   add_test(Test_${TEST_NAME} ${TEST_NAME})
   file(GLOB TEST_FILE "${FNAME}.cpp" "${FNAME}.c")
+
   add_executable(${TEST_NAME} ${TEST_FILE})
 
   set_property(TARGET ${TEST_NAME} PROPERTY CXX_STANDARD 14)
@@ -68,13 +67,15 @@ foreach(FILE ${FILES})
   if (MeshIO_BUILD_COVERAGE)
     target_compile_options(${TEST_NAME}
       PRIVATE
-        -g -O0 --coverage -fprofile-arcs -ftest-coverage
+        -g -O0 -fprofile-arcs -ftest-coverage
       )
     target_link_libraries(${TEST_NAME}
       PRIVATE
-        -g -O0 --coverage -fprofile-arcs -ftest-coverage
+        -g -O0 -fprofile-arcs -ftest-coverage
       )
   endif (MeshIO_BUILD_COVERAGE)
 
   set_target_properties(${TEST_NAME} PROPERTIES FOLDER "Tests")
+
+  add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 endforeach()
