@@ -1,16 +1,3 @@
-### Below code was used to verify GNU compiler
-### version on travis-ci servers
-if (CMAKE_COMPILER_IS_GNUCC)
-    execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
-        OUTPUT_VARIABLE GCC_VERSION)
-    string(REGEX MATCHALL "[0-9]+" GCC_VERSION_COMPONENTS
-        ${GCC_VERSION})
-    list(GET GCC_VERSION_COMPONENTS 0 GCC_MAJOR)
-    list(GET GCC_VERSION_COMPONENTS 1 GCC_MINOR)
-
-    message(STATUS "Using GNUCC Compiler Verson ${GCC_MAJOR}.${GCC_MINOR}")
-endif ()
-
 if (NOT TARGET gtest)
   # gtest targets cmake version 2.6 which throws warnings for policy CMP0042 on
   # newer cmakes. This sets the default global setting for that policy.
