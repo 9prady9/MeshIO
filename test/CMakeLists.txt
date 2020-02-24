@@ -1,16 +1,3 @@
-### Below code was used to verify GNU compiler
-### version on travis-ci servers
-if (CMAKE_COMPILER_IS_GNUCC)
-    execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
-        OUTPUT_VARIABLE GCC_VERSION)
-    string(REGEX MATCHALL "[0-9]+" GCC_VERSION_COMPONENTS
-        ${GCC_VERSION})
-    list(GET GCC_VERSION_COMPONENTS 0 GCC_MAJOR)
-    list(GET GCC_VERSION_COMPONENTS 1 GCC_MINOR)
-
-    message(STATUS "Using GNUCC Compiler Verson ${GCC_MAJOR}.${GCC_MINOR}")
-endif()
-
 if (NOT TARGET gtest)
   # gtest targets cmake version 2.6 which throws warnings for policy CMP0042 on
   # newer cmakes. This sets the default global setting for that policy.
@@ -24,7 +11,8 @@ if (NOT TARGET gtest)
   add_subdirectory(googletest/googletest EXCLUDE_FROM_ALL)
   set_target_properties(gtest gtest_main
     PROPERTIES
-      FOLDER "ExternalProjectTargets/gtest")
+      FOLDER "ExternalProjectTargets/gtest"
+  )
 
   # Hide gtest project variables
   mark_as_advanced(
@@ -34,48 +22,48 @@ if (NOT TARGET gtest)
     gtest_disable_pthreads
     gtest_force_shared_crt
     gtest_hide_internal_symbols)
-endif()
+endif ()
 
-file(GLOB FILES "*.cpp")
+set(test_sources
+  ${CMAKE_CURRENT_LIST_DIR}/stl.cpp
+)
 
-foreach(FILE ${FILES})
-  get_filename_component(FNAME ${FILE} NAME_WE)
-  set(TEST_NAME ${FNAME})
-  add_test(Test_${TEST_NAME} ${TEST_NAME})
-  file(GLOB TEST_FILE "${FNAME}.cpp" "${FNAME}.c")
+foreach (src ${test_sources})
+  get_filename_component(FNAME ${src} NAME_WE)
+  set(testTargetName ${FNAME})
 
-  add_executable(${TEST_NAME} ${TEST_FILE})
+  add_test(NAME ${testTargetName} COMMAND ${testTargetName})
+  add_executable(${testTargetName} ${src})
 
-  set_property(TARGET ${TEST_NAME} PROPERTY CXX_STANDARD 14)
-
-  target_include_directories(${TEST_NAME}
-    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
-    )
-
-  target_compile_definitions(${TEST_NAME}
+  set_target_properties(${testTargetName}
+    PROPERTIES
+    CXX_STANDARD 17
+    FOLDER "Tests"
+  )
+  target_include_directories(${testTargetName}
+      PRIVATE ${CMAKE_CURRENT_LIST_DIR}
+  )
+  target_compile_definitions(${testTargetName}
     PRIVATE
       TEST_DIR="${MeshIO_SOURCE_DIR}/resources"
-    )
-
-  target_link_libraries(${TEST_NAME}
+  )
+  target_link_libraries(${testTargetName}
     PRIVATE
       meshio
       gtest
       gtest_main
+  )
+  if (${MeshIO_BUILD_COVERAGE})
+    if (NOT UNIX)
+      message(SEND_ERROR "coverage build on Windows not available now")
+    endif ()
+    target_compile_options(${testTargetName}
+      PRIVATE
+        -g -O0 -fprofile-arcs -ftest-coverage
     )
-
-  if (MeshIO_BUILD_COVERAGE)
-    target_compile_options(${TEST_NAME}
+    target_link_libraries(${testTargetName}
       PRIVATE
         -g -O0 -fprofile-arcs -ftest-coverage
-      )
-    target_link_libraries(${TEST_NAME}
-      PRIVATE
-        -g -O0 -fprofile-arcs -ftest-coverage
-      )
-  endif (MeshIO_BUILD_COVERAGE)
-
-  set_target_properties(${TEST_NAME} PROPERTIES FOLDER "Tests")
-
-  add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
-endforeach()
+    )
+  endif ()
+endforeach ()
