@@ -10,10 +10,7 @@
 #ifndef __VECTORS_HPP__
 #define __VECTORS_HPP__
 
-#include <vector>
-
-namespace meshio
-{
+namespace meshio {
 
 template<class T>
 class Vec2 {
@@ -40,14 +37,14 @@ class Vec2 {
         return *this;
     }
 
-    Vec2& operator*=(const T pDiv) {
-        x *= pDiv;
-        y *= pDiv;
+    Vec2& operator*=(const T pFactor) {
+        x *= pFactor;
+        y *= pFactor;
         return *this;
     }
 
-    Vec2& operator/=(const T pDiv) {
-        T oneByPDiv = (T)1/pDiv;
+    Vec2& operator/=(const T pFactor) {
+        T oneByPDiv = (T)1/pFactor;
         return operator*=(oneByPDiv);
     }
 
@@ -83,15 +80,15 @@ class Vec3 {
         return *this;
     }
 
-    Vec3& operator*=(const T pDiv) {
-        x *= pDiv;
-        y *= pDiv;
-        z *= pDiv;
+    Vec3& operator*=(const T pFactor) {
+        x *= pFactor;
+        y *= pFactor;
+        z *= pFactor;
         return *this;
     }
 
-    Vec3& operator/=(const T pDiv) {
-        T oneByPDiv = (T)1/pDiv;
+    Vec3& operator/=(const T pFactor) {
+        T oneByPDiv = (T)1/pFactor;
         return operator*=(oneByPDiv);
     }
 
@@ -129,16 +126,16 @@ class Vec4 {
         return *this;
     }
 
-    Vec4& operator*=(const T pDiv) {
-        x *= pDiv;
-        y *= pDiv;
-        z *= pDiv;
-        w *= pDiv;
+    Vec4& operator*=(const T pFactor) {
+        x *= pFactor;
+        y *= pFactor;
+        z *= pFactor;
+        w *= pFactor;
         return *this;
     }
 
-    Vec4& operator/=(const T pDiv) {
-        T oneByPDiv = (T)1/pDiv;
+    Vec4& operator/=(const T pFactor) {
+        T oneByPDiv = (T)1/pFactor;
         return operator*=(oneByPDiv);
     }
 
@@ -174,5 +171,4 @@ Vec3<T> cross(const Vec3<T> &lhs, const Vec3<T>& rhs) {
 }
 
 }
-
 #endif // __VECTORS_HPP__

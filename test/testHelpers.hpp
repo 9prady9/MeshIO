@@ -1,14 +1,15 @@
+#include <meshio/stl.hpp>
+
 #include <vector>
-#include <meshio/meshio_defines.hpp>
 
 template <typename T>
-void initializeReferenceSTLObj(std::vector< meshio::STLData<T> > &refObjs)
+void initializeReferenceSTLObj(std::vector< meshio::stl::Data<T> > &refObjs)
 {
     for(unsigned i = 0; i < refObjs.size(); ++i)
         refObjs[i].clear();
     refObjs.clear();
 
-    meshio::STLData<T> refObj;
+    meshio::stl::Data<T> refObj;
     refObj.resize(12);
     refObj.mNormals[0] = meshio::Vec3<T>(0,0,-1);
     refObj.mPositions[0] = meshio::Vec4<T>(0, 0, 0, 1);
@@ -61,4 +62,3 @@ void initializeReferenceSTLObj(std::vector< meshio::STLData<T> > &refObjs)
 
     refObjs.push_back(refObj);
 }
-

@@ -7,28 +7,29 @@
  * file.
  */
 
-Vec3<float> readNormal(const std::string& pLine)
-{
-    Vec3<float> N;
-    std::stringstream lineSS(pLine);
-    std::string facet, normal;
-    lineSS >> facet >> normal >> N.x >> N.y >> N.z;
-    return N;
-}
-
-Vec4<float> readVertex(const std::string& pLine)
-{
-    Vec4<float> V;
-    std::stringstream lineSS(pLine);
-    std::string vertex;
-    lineSS >> vertex >> V.x >> V.y >> V.z;
-    V.w = 1.0;
-    return V;
-}
+namespace internal {
 
 template<typename T = float>
-bool readAsciiSTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
+bool readAsciiSTL(std::vector< meshio::stl::Data<T> > &pObjects,
+                  const char* pFileName)
 {
+    auto readNormal = [](const std::string& pLine) -> Vec3<float> {
+        Vec3<float> N;
+        std::stringstream lineSS(pLine);
+        std::string facet, normal;
+        lineSS >> facet >> normal >> N.x >> N.y >> N.z;
+        return N;
+    };
+
+    auto readVertex = [](const std::string& pLine) -> Vec4<float> {
+        Vec4<float> V;
+        std::stringstream lineSS(pLine);
+        std::string vertex;
+        lineSS >> vertex >> V.x >> V.y >> V.z;
+        V.w = 1.0;
+        return V;
+    };
+
     std::ifstream objFile(pFileName);
     std::string line;
 
@@ -42,7 +43,7 @@ bool readAsciiSTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
         lineSS >> keyWord;
 
         if (keyWord == "solid") {
-            STLData<T> currObj;
+            meshio::stl::Data<T> currObj;
             bool isFacetRead = false;
             unsigned outerCount = 0;
 
@@ -84,7 +85,6 @@ bool readAsciiSTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
             pObjects.push_back(currObj);
         }
     }
-
     objFile.close();
 
     return true;
@@ -97,7 +97,8 @@ bool readAsciiSTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
  * triangles and the format continues.
  */
 template<typename T = float>
-bool readBinarySTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
+bool readBinarySTL(std::vector< meshio::stl::Data<T> > &pObjects,
+                   const char* pFileName)
 {
     uint32_t numTriangles;
     uint16_t attribByteCount;
@@ -121,7 +122,7 @@ bool readBinarySTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
     ifs.read((char *)&numTriangles, sizeof(uint32_t));
 
     while (numTriangles) {
-        STLData<T> stlObject;
+        meshio::stl::Data<T> stlObject;
         stlObject.resize(numTriangles);
         Vec4<T> position;
         Vec3<float> normal;
@@ -166,11 +167,12 @@ bool readBinarySTL(std::vector< STLData<T> > &pObjects, const char* pFileName)
 }
 
 template<typename T = float>
-bool writeAsciiSTL(const char* pFileName, const std::vector< STLData<T> > &pObjects)
+bool writeAsciiSTL(const char* pFileName,
+                   const std::vector< meshio::stl::Data<T> > &pObjects)
 {
-    typedef typename std::vector< STLData<T> >::const_iterator CSTLIter;
-    typedef typename std::vector< Vec3<float> >::const_iterator CVec3Iter;
-    typedef typename std::vector< Vec4<float> >::const_iterator CVec4Iter;
+    using CSTLIter  = typename std::vector< meshio::stl::Data<T> >::const_iterator;
+    using CVec3Iter = typename std::vector< Vec3<float> >::const_iterator;
+    using CVec4Iter = typename std::vector< Vec4<float> >::const_iterator;
 
     std::ofstream objFile(pFileName);
 
@@ -182,13 +184,17 @@ bool writeAsciiSTL(const char* pFileName, const std::vector< STLData<T> > &pObje
 
         CVec4Iter v = obj->mPositions.begin();
         for (CVec3Iter f = obj->mNormals.begin(); f != obj->mNormals.end(); ++f) {
-            objFile << "facet normal " << std::scientific << f->x << " " << f->y << " " << f->z << std::endl;
+            objFile << "facet normal " << std::scientific <<
+                f->x << " " << f->y << " " << f->z << std::endl;
             objFile << "outer loop" << std::endl;
-            objFile << "vertex " << std::scientific << v->x << " " << v->y << " " << v->z << std::endl;
+            objFile << "vertex " << std::scientific <<
+                v->x << " " << v->y << " " << v->z << std::endl;
             ++v;
-            objFile << "vertex " << std::scientific << v->x << " " << v->y << " " << v->z << std::endl;
+            objFile << "vertex " << std::scientific <<
+                v->x << " " << v->y << " " << v->z << std::endl;
             ++v;
-            objFile << "vertex " << std::scientific << v->x << " " << v->y << " " << v->z << std::endl;
+            objFile << "vertex " << std::scientific <<
+                v->x << " " << v->y << " " << v->z << std::endl;
             ++v;
             objFile << "endloop" << std::endl;
             objFile << "endfacet" << std::endl;
@@ -203,7 +209,8 @@ bool writeAsciiSTL(const char* pFileName, const std::vector< STLData<T> > &pObje
 }
 
 template<typename T = float>
-bool writeBinarySTL(const char* pFileName, const std::vector< STLData<T> > &pObjects)
+bool writeBinarySTL(const char* pFileName,
+                    const std::vector< meshio::stl::Data<T> > &pObjects)
 {
     uint32_t numTriangles;
     uint16_t attribByteCount = 0;
@@ -249,9 +256,11 @@ bool writeBinarySTL(const char* pFileName, const std::vector< STLData<T> > &pObj
     return true;
 }
 
+}  // namespace internal
 
 template<typename T>
-bool read(std::vector< STLData<T> > &pObjects, const char* pFileName)
+bool read(std::vector< meshio::stl::Data<T> > &pObjects,
+          const char* pFileName)
 {
     for (unsigned int i = 0; i < pObjects.size(); ++i)
         pObjects[i].clear();
@@ -273,22 +282,19 @@ bool read(std::vector< STLData<T> > &pObjects, const char* pFileName)
     ifs.close();
 
     if (line.substr(0, 5) == "solid")
-        return readAsciiSTL<T>(pObjects, pFileName);
+        return internal::readAsciiSTL<T>(pObjects, pFileName);
     else
-        return readBinarySTL<T>(pObjects, pFileName);
+        return internal::readBinarySTL<T>(pObjects, pFileName);
 }
 
-/*
- * Writes STL files in a specified format
- * "ascii" or "binary"
- */
 template<typename T>
-bool write(const char* pFileName, const STLFormat pFormat,
-    const std::vector< STLData<T> > &pObjects)
+bool write(const char* pFileName,
+           const meshio::stl::Format pFormat,
+           const std::vector< meshio::stl::Data<T> > &pObjects)
 {
-    switch (pFormat) {
-    case STL_ASCII: return writeAsciiSTL(pFileName, pObjects);
-    case STL_BINARY: return writeBinarySTL(pFileName, pObjects);
-        default: return false;
+    if(pFormat == Format::Ascii) {
+        return internal::writeAsciiSTL(pFileName, pObjects);
+    } else { //Binary STL
+        return internal::writeBinarySTL(pFileName, pObjects);
     }
 }
