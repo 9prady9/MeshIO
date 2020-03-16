@@ -14,32 +14,34 @@ matrix:
           addons:
               apt:
                   sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5', 'george-edison55-precise-backports']
-                  packages: ['clang-3.5', 'lcov', 'cmake', 'cmake-data']
+                  packages: ['clang-3.5', 'lcov', 'cmake', 'cmake-data', 'doxygen']
         - dist: xenial
           compiler: clang
           env: INSTALL_CXX=clang++-3.6
           addons:
               apt:
                   sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6', 'george-edison55-precise-backports']
-                  packages: ['clang-3.6', 'lcov', 'cmake', 'cmake-data']
+                  packages: ['clang-3.6', 'lcov', 'cmake', 'cmake-data', 'doxygen']
         - dist: xenial
           compiler: gcc-5
           env: INSTALL_CXX=g++-5 INSTALL_CC=gcc-5
           addons:
               apt:
                   sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']
-                  packages: ['g++-5', 'lcov', 'cmake', 'cmake-data']
+                  packages: ['g++-5', 'lcov', 'cmake', 'cmake-data', 'doxygen']
         - dist: xenial
           compiler: gcc-9
           env: INSTALL_CXX=g++-9 INSTALL_CC=gcc-9
           addons:
               apt:
                   sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']
-                  packages: ['g++-9', 'lcov', 'cmake', 'cmake-data']
+                  packages: ['g++-9', 'lcov', 'cmake', 'cmake-data', 'doxygen']
         - os: osx
           osx_image: xcode10.1
           compiler: clang
           env: INSTALL_CXX=clang++ INSTALL_CC=clang
+          install:
+              - brew install doxygen
 
 before_install:
     - gem install coveralls-lcov
@@ -47,7 +49,7 @@ before_install:
 script:
     - mkdir -p build
     - cd build
-    - CC=$INSTALL_CC CXX=$INSTALL_CXX cmake ../ -DMeshIO_BUILD_COVERAGE:BOOL=ON
+    - CC=$INSTALL_CC CXX=$INSTALL_CXX cmake ../ -DMeshIO_BUILD_COVERAGE:BOOL=ON -DMeshIO_BUILD_DOCS:BOOL=ON
     - make -j4
     - ctest --output-on-failure
 
@@ -57,5 +59,15 @@ after_success:
         brew install lcov;
       fi
     - lcov --directory test --base-directory ../include/meshio/ --capture --no-external --output-file coverage.info
+    - genhtml coverage.info --output-directory ./docs/html/coverage
     - lcov --remove coverage.info '/usr*' -o coverage.info
     - coveralls-lcov coverage.info
+
+deploy:
+    provider: pages
+    skip_cleanup: true
+    local_dir: ./build/docs/html
+    github_token: $GH_REPO_TOKEN
+    on:
+        branch: master
+        os: osx

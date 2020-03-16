@@ -9,3 +9,11 @@ Currently supported formats
 * STL
 
 We plan to add support for Wavefront OBJ format next.
+
+## Documentation
+
+* [Documentation]
+* [Coverage]
+
+[Documentation]: https://9prady9.github.io/meshio/
+[Coverage]: https://9prady9.github.io/meshio/coverage
