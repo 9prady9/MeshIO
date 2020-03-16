@@ -17,12 +17,5 @@ No Examples Written Yet.
 
 ## Documentation
 
-* [Documentation]
-* [Coverage]
-
-#### Email
-
-* Engineering: pradeep.garigipati@gmail.com; acrlakshman@gmail.com
-
 [Documentation]: https://9prady9.github.io/meshio/
 [Coverage]: https://9prady9.github.io/meshio/coverage
