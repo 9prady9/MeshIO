@@ -15,6 +15,7 @@ A header only library to load/store polygonal meshes.
 
 No Examples Written Yet.
 
-#### Email
+## Documentation
 
-* Engineering: pradeep.garigipati@gmail.com; acrlakshman@gmail.com
+[Documentation]: https://9prady9.github.io/meshio/
+[Coverage]: https://9prady9.github.io/meshio/coverage

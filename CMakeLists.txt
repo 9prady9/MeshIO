@@ -64,4 +64,4 @@ install(DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/include"
 )
 
 mark_as_advanced(MeshIO_BUILD_COVERAGE)
-mark_as_advanced(MeshIO_BUILD_DOCS)
+mark_as_advanced(MeshIO_BUILD_EXAMPLES)
