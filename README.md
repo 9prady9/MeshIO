@@ -15,5 +15,5 @@ We plan to add support for Wavefront OBJ format next.
 * [Documentation]
 * [Coverage]
 
-[Documentation]: https://9prady9.github.io/meshio/
-[Coverage]: https://9prady9.github.io/meshio/coverage
+[Documentation]: https://9prady9.github.io/MeshIO/
+[Coverage]: https://9prady9.github.io/MeshIO/coverage
