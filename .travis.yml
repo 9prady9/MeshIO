@@ -70,4 +70,4 @@ deploy:
     github_token: $GH_REPO_TOKEN
     on:
         branch: master
-        condition: os = osx
+        condition: $TRAVIS_OS_NAME = osx
