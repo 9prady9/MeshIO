@@ -10,7 +10,7 @@
 namespace internal {
 
 template<typename T = float>
-bool readAsciiSTL(std::vector< meshio::stl::Data<T> > &pObjects,
+void readAsciiSTL(std::vector< meshio::stl::Data<T> > &pObjects,
                   const char* pFileName)
 {
     auto readNormal = [](const std::string& pLine) -> Vec3<float> {
@@ -30,13 +30,12 @@ bool readAsciiSTL(std::vector< meshio::stl::Data<T> > &pObjects,
         return V;
     };
 
-    std::ifstream objFile(pFileName);
+    std::ifstream stlFile(pFileName);
     std::string line;
 
-    if (!objFile.is_open())
-        return false;
+    const bool isFileOpen = stlFile.is_open();
 
-    while (std::getline(objFile, line)) {
+    while (isFileOpen && std::getline(stlFile, line)) {
         std::stringstream lineSS(line);
         std::string keyWord;
 
@@ -47,7 +46,7 @@ bool readAsciiSTL(std::vector< meshio::stl::Data<T> > &pObjects,
             bool isFacetRead = false;
             unsigned outerCount = 0;
 
-            while (std::getline(objFile, line)) {
+            while (std::getline(stlFile, line)) {
                 std::stringstream ss(line);
                 std::string key;
 
@@ -85,9 +84,7 @@ bool readAsciiSTL(std::vector< meshio::stl::Data<T> > &pObjects,
             pObjects.push_back(currObj);
         }
     }
-    objFile.close();
-
-    return true;
+    stlFile.close();
 }
 
 /*
@@ -95,9 +92,12 @@ bool readAsciiSTL(std::vector< meshio::stl::Data<T> > &pObjects,
  * https://en.wikipedia.org/wiki/STL_(file_format). After the end of first
  * object, we assume that the next object's information starts with number of
  * triangles and the format continues.
+ *
+ * Note that this function assumes valid file path and it's existence.
+ * All necessary checks are carried out in stl::read wrapper.
  */
 template<typename T = float>
-bool readBinarySTL(std::vector< meshio::stl::Data<T> > &pObjects,
+void readBinarySTL(std::vector< meshio::stl::Data<T> > &pObjects,
                    const char* pFileName)
 {
     uint32_t numTriangles;
@@ -110,11 +110,6 @@ bool readBinarySTL(std::vector< meshio::stl::Data<T> > &pObjects,
 
     std::stringstream strErr;
     std::ifstream ifs(pFileName, std::ios::binary | std::ios::in);
-    if (!ifs) {
-        strErr << "Cannot open file (" << pFileName << ")" << std::endl;
-        std::cerr << strErr.str() << std::endl;
-        return false;
-    }
 
     char header[80];
     ifs.read(&header[0], 80);
@@ -162,8 +157,6 @@ bool readBinarySTL(std::vector< meshio::stl::Data<T> > &pObjects,
     }
 
     ifs.close();
-
-    return true;
 }
 
 template<typename T = float>
@@ -282,9 +275,11 @@ bool read(std::vector< meshio::stl::Data<T> > &pObjects,
     ifs.close();
 
     if (line.substr(0, 5) == "solid")
-        return internal::readAsciiSTL<T>(pObjects, pFileName);
+        internal::readAsciiSTL<T>(pObjects, pFileName);
     else
-        return internal::readBinarySTL<T>(pObjects, pFileName);
+        internal::readBinarySTL<T>(pObjects, pFileName);
+
+    return true;
 }
 
 template<typename T>

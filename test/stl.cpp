@@ -9,6 +9,7 @@
 
 #include <gtest/gtest.h>
 #include <meshio/stl.hpp>
+#include <meshio/vectors.hpp>
 #include <testHelpers.hpp>
 
 using namespace std;
@@ -100,4 +101,73 @@ TEST(STL, CROSS_CHECK)
     stl::read<float>(asciiReadObjs, TEST_DIR "/cube_ascii.stl");
 
     EXPECT_TRUE(binReadObjs[0] == asciiReadObjs[0]);
+}
+
+TEST(STL, PositionsCountMismatch)
+{
+    vector< stl::Data<float> > binReadObjs;
+    stl::read<float>(binReadObjs, TEST_DIR "/cube_binary.stl");
+
+    vector< stl::Data<float> > asciiReadObjs;
+    stl::read<float>(asciiReadObjs, TEST_DIR "/cube_ascii.stl");
+
+    asciiReadObjs[0].mPositions.erase(
+            asciiReadObjs[0].mPositions.begin() +
+            asciiReadObjs[0].mPositions.size() - 1);
+
+    EXPECT_FALSE(binReadObjs[0] == asciiReadObjs[0]);
+}
+
+TEST(STL, NormalsCountMismatch)
+{
+    vector< stl::Data<float> > binReadObjs;
+    stl::read<float>(binReadObjs, TEST_DIR "/cube_binary.stl");
+
+    vector< stl::Data<float> > asciiReadObjs;
+    stl::read<float>(asciiReadObjs, TEST_DIR "/cube_ascii.stl");
+
+    asciiReadObjs[0].mNormals.erase(
+            asciiReadObjs[0].mNormals.begin() +
+            asciiReadObjs[0].mNormals.size() - 1);
+
+    EXPECT_FALSE(binReadObjs[0] == asciiReadObjs[0]);
+}
+
+TEST(STL, PositionsValuesMismatch)
+{
+    vector< stl::Data<float> > binReadObjs;
+    stl::read<float>(binReadObjs, TEST_DIR "/cube_binary.stl");
+
+    vector< stl::Data<float> > asciiReadObjs;
+    stl::read<float>(asciiReadObjs, TEST_DIR "/cube_ascii.stl");
+
+    asciiReadObjs[0].mPositions[0] = meshio::Vec4<float>();
+
+    EXPECT_FALSE(binReadObjs[0] == asciiReadObjs[0]);
+}
+
+TEST(STL, NormalsValuesMismatch)
+{
+    vector< stl::Data<float> > binReadObjs;
+    stl::read<float>(binReadObjs, TEST_DIR "/cube_binary.stl");
+
+    vector< stl::Data<float> > asciiReadObjs;
+    stl::read<float>(asciiReadObjs, TEST_DIR "/cube_ascii.stl");
+
+    asciiReadObjs[0].mNormals[0] = meshio::Vec3<float>();
+
+    EXPECT_FALSE(binReadObjs[0] == asciiReadObjs[0]);
+}
+
+TEST(STL, CheckReReadIntoSameObject)
+{
+    vector< stl::Data<float> > binReadObjs;
+    stl::read<float>(binReadObjs, TEST_DIR "/cube_binary.stl");
+
+    size_t numPositions = binReadObjs[0].mPositions.size();
+
+    // Re-read into same obj object, which should clear our old data
+    stl::read<float>(binReadObjs, TEST_DIR "/cube_binary.stl");
+
+    EXPECT_TRUE(binReadObjs[0].mPositions.size() == numPositions);
 }
