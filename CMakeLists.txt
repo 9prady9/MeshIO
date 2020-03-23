@@ -1,6 +1,10 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.17)
 
-project(MeshIO VERSION 0.1.0)
+project(MeshIO
+  VERSION 0.1.0
+  DESCRIPTION "Header only library to read/write polygonal meshes"
+  LANGUAGES CXX)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -10,6 +14,7 @@ include(meshioChecks)
 option(MeshIO_BUILD_DOCS "Build MeshIO Documentation" OFF)
 option(MeshIO_BUILD_EXAMPLES "Build MeshIO Examples" OFF)
 option(MeshIO_BUILD_COVERAGE "Generate MeshIO coverage report" OFF)
+option(MeshIO_BUILD_TESTS "Build unit tests" OFF)
 
 add_library(meshio INTERFACE)
 
@@ -20,8 +25,10 @@ target_include_directories(meshio INTERFACE
 
 target_compile_features(meshio INTERFACE cxx_std_17)
 
-include(CTest)
-add_subdirectory(test)
+if(MeshIO_BUILD_TESTS OR MeshIO_BUILD_COVERAGE)
+  include(CTest)
+  add_subdirectory(test)
+endif()
 
 if(MeshIO_BUILD_DOCS)
   add_subdirectory(docs)
