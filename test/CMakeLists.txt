@@ -1,28 +1,33 @@
-if (NOT TARGET gtest)
-  # gtest targets cmake version 2.6 which throws warnings for policy CMP0042 on
-  # newer cmakes. This sets the default global setting for that policy.
-  set(CMAKE_POLICY_DEFAULT_CMP0042 NEW)
-  if(WIN32)
-    set(gtest_force_shared_crt ON
-      CACHE INTERNAL "Required so that the libs Runtime is not set to MT DLL")
-  endif()
+set(CMAKE_POLICY_DEFAULT_CMP0042 NEW)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-  set(GOOGLETEST_VERSION 1.8.1) #DUMMY to suppress cmake bug
-  add_subdirectory(googletest/googletest EXCLUDE_FROM_ALL)
-  set_target_properties(gtest gtest_main
-    PROPERTIES
-      FOLDER "ExternalProjectTargets/gtest"
-  )
+include(FetchContent)
+FetchContent_Declare(
+  gtest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG release-1.10.0)
 
-  # Hide gtest project variables
-  mark_as_advanced(
-    BUILD_SHARED_LIBS
-    gtest_build_samples
-    gtest_build_tests
-    gtest_disable_pthreads
-    gtest_force_shared_crt
-    gtest_hide_internal_symbols)
-endif ()
+FetchContent_GetProperties(gtest)
+
+if(NOT gtest_POPULATED)
+  FetchContent_Populate(gtest)
+  set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1 CACHE BOOL "")
+  add_subdirectory(${gtest_SOURCE_DIR} ${gtest_BINARY_DIR} EXCLUDE_FROM_ALL)
+  unset(CMAKE_SUPPRESS_DEVELOPER_WARNINGS)
+endif()
+
+# Hide gtest project variables
+mark_as_advanced(
+  gmock_build_tests
+  gtest_build_samples
+  gtest_build_tests
+  gtest_disable_pthreads
+  gtest_force_shared_crt
+  gtest_hide_internal_symbols
+  BUILD_GMOCK
+  BUILD_GTEST)
+
+set_target_properties(gtest gtest_main PROPERTIES FOLDER "ExternalProjectTargets/gtest")
 
 set(test_sources
   ${CMAKE_CURRENT_LIST_DIR}/stl.cpp

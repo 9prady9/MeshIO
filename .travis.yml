@@ -6,6 +6,15 @@ branches:
 
 sudo: false
 
+install: &installCMake
+    - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+    - mkdir ${DEPS_DIR} && cd ${DEPS_DIR}
+    - |
+        CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v3.17.0/cmake-3.17.0-Linux-x86_64.tar.gz"
+        mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+        export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+    - cd ..
+
 matrix:
     include:
         - dist: xenial
@@ -15,6 +24,7 @@ matrix:
               apt:
                   sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5', 'george-edison55-precise-backports']
                   packages: ['clang-3.5', 'lcov', 'cmake', 'cmake-data', 'doxygen']
+          <<: *installCMake
         - dist: xenial
           compiler: clang
           env: INSTALL_CXX=clang++-3.6
@@ -22,6 +32,7 @@ matrix:
               apt:
                   sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6', 'george-edison55-precise-backports']
                   packages: ['clang-3.6', 'lcov', 'cmake', 'cmake-data', 'doxygen']
+          <<: *installCMake
         - dist: xenial
           compiler: gcc-5
           env: INSTALL_CXX=g++-5 INSTALL_CC=gcc-5
@@ -29,6 +40,7 @@ matrix:
               apt:
                   sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']
                   packages: ['g++-5', 'lcov', 'cmake', 'cmake-data', 'doxygen']
+          <<: *installCMake
         - dist: xenial
           compiler: gcc-9
           env: INSTALL_CXX=g++-9 INSTALL_CC=gcc-9
@@ -36,12 +48,19 @@ matrix:
               apt:
                   sources: ['ubuntu-toolchain-r-test', 'george-edison55-precise-backports']
                   packages: ['g++-9', 'lcov', 'cmake', 'cmake-data', 'doxygen']
+          <<: *installCMake
         - os: osx
           osx_image: xcode10.1
           compiler: clang
           env: INSTALL_CXX=clang++ INSTALL_CC=clang
           install:
               - brew install doxygen
+              - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+              - mkdir ${DEPS_DIR} && cd ${DEPS_DIR}
+              - CMAKE_URL="https://github.com/Kitware/CMake/releases/download/v3.17.0/cmake-3.17.0-Darwin-x86_64.tar.gz"
+              - mkdir cmake && wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+              - export PATH=${DEPS_DIR}/cmake/CMake.app/Contents/bin:${PATH}
+              - cd ..
 
 before_install:
     - gem install coveralls-lcov
